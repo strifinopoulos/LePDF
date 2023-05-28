@@ -1,5 +1,6 @@
-SetDesc: "PDFs of positron obtained in the 6FS."
+SetDesc: "PDFs of electron obtained in the 6FS."
 Authors: F.Garosi, D.Marzocca and S.Trifinopoulos
+Reference: 2303.16964
 PdfType: central 
 Format: lhagrid1
 DataVersion: 1
@@ -13,8 +14,8 @@ FlavorScheme: fixed
 NumFlavors: 6
 XMin: 1e-06
 XMax: 1
-QMin: 9.943802
-QMax: 5.722276e+004
+QMin: 1.1065510e+001
+QMax: 1.1046460e+004
 MMuon: 0.1056584
 MW: 80.379
 MZ: 91.1876
