@@ -14,7 +14,7 @@ FlavorScheme: fixed
 NumFlavors: 5
 XMin: 1e-06
 XMax: 1
-QMin: 1.0984270e+001
+QMin: 9.9438020e+00
 QMax: 5.7222760e+004
 MMuon: 0.1056584
 MW: 80.379

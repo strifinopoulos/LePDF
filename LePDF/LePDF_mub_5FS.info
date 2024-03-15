@@ -5,7 +5,7 @@ PdfType: central
 Format: lhagrid1
 DataVersion: 1
 NumMembers: 1
-Particle: -13
+Particle: 13
 Flavors: [11	11	12	13	13	14	15	15	16	-11	-11	-12	-13	-13	-14	-15	-15	-16	1	1	2	2	3	3	4	4	5	5	-1	-1	-2	-2	-3	-3	-4	-4	-5	-5	21	21	22	22	23	23	23	2223	2223	24	24	24	-24	-24	-24	25	2523]
 Helicity: [-	+	-	-	+	-	-	+	-	+	-	+	+	-	+	+	-	+	-	+	-	+	-	+	-	+	-	+	+	-	+	-	+	-	+	-	+	-	+	-	+	-	+	-	0	+	-	+	-	0	+	-	0	0	0]
 OrderQCD: 0
@@ -14,7 +14,7 @@ FlavorScheme: fixed
 NumFlavors: 5
 XMin: 1e-06
 XMax: 1
-QMin: 1.0984270e+001
+QMin: 9.9438020e+00
 QMax: 5.7222760e+004
 MMuon: 0.1056584
 MW: 80.379

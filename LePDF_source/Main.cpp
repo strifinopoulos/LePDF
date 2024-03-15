@@ -1,7 +1,7 @@
 /* -------------------------------------------------------------- 
-						LePDF v.1.0
+						LePDF v.1.1
 
-						14/09/2023
+						20/02/2024
 						
 	Francesco Garosi,	David Marzocca, Sokratis Trifinopoulos
 	
@@ -13,7 +13,6 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdio.h>
-
 
 
 /* ----------------------- Input Parameters ----------------------- */
@@ -28,7 +27,10 @@ int FS = 6; /* Defines the flavour scheme: 5 = without top, any other integer = 
 /* CHOOSE THE NUMBER OF x-GRID POINTS */
 int Nx = 1001; /* Number of x-grid points. Notice that in our paper we defined Nx to be the number of bins, so here Nx is just shifted by 1 */
 
-
+/* CHOOSE HOW MANY OF THE x-GRID POINTS SAVE TO FILE */
+/* The default is to save one every 5 x-steps, plus all the last 100 x-steps to describe better the muon PDF peak close to x=1 */
+int ixStep = 5;
+int NixLast = 100;
 
 /* ----------------------- Definitions ----------------------- */
 
@@ -211,13 +213,7 @@ int main(){
 	int N = 42; /*number of PDFs in the full EW evolution*/
 	int Nttot = Nt0+Nt-1; /*total number of values of t at which we compute the PDFs (the -1 is due to the fact that the last value of the first phase and the first of the second are the same*/
 	
-	/*Definition of an array to check the presence of negative values in the PDFs, meaning that there are mistakes (except for the mixed PDFs)*/
-	int *checkpdf; 
-	checkpdf = (int*)malloc((N+N0)*sizeof(int));
-	for(i=0;i<N+N0;i++){
-		checkpdf[i]=0;
-	}
-	
+
 	/* ----------------------- Preparing t and Q grids ----------------------- */
 	/*Grids in the energy scale, both in t and Q. They contain the Nttot values at which we compute the PDFs*/
 	double *tgrid, *qgrid;
@@ -358,9 +354,6 @@ int main(){
 	double *grid,*deltagrid;
 	int *rgrid;
 	
-	/*The default is to save one every 5 x-steps, plus all the last 20 x-steps*/
-	int ixStep = 5;
-	int NixLast = 20;
 	int NixSteps = ((Nx-1) - NixLast) / ixStep;
 	int lr = NixSteps + NixLast + 1; /*Number of elements of the grid we want to write in the output files. It is the length of rgrid*/
 	grid = (double*)malloc(Nx*sizeof(double));
@@ -570,7 +563,7 @@ int main(){
 	fprintf(lhapdf, "Format: lhagrid1\n");
 	fprintf(lhapdf, "---\n");
 	for(i=0;i<lr;i++){
-		fprintf(lhapdf, "%e	", grid[rgrid[i]]);
+		fprintf(lhapdf, "%.10e ", grid[rgrid[i]]); /* we use 10 significant digits to save the x-grid, this is needed to describe well the last few values, which are very close to 1 */
 	}
 	fprintf(lhapdf, "\n");
 	for(i=iw;i<Nt0-1;i+=itSteps){
@@ -583,8 +576,8 @@ int main(){
 	fprintf(lhapdfbar, "PdfType: central\n");
 	fprintf(lhapdfbar, "Format: lhagrid1\n");
 	fprintf(lhapdfbar, "---\n");
-	for(i=0;i<Nx;i++){
-		fprintf(lhapdfbar, "%e	", grid[i]);
+	for(i=0;i<lr;i++){
+		fprintf(lhapdfbar, "%.10e	", grid[rgrid[i]]); /* we use 10 significant digits to save the x-grid, this is needed to describe well the last few values, which are very close to 1 */
 	}
 	fprintf(lhapdfbar, "\n");
 	for(i=iw;i<Nt0-1;i+=itSteps){
@@ -763,7 +756,6 @@ int main(){
 	free(grid);
 	free(deltagrid);
 	free(rgrid);
-	free(checkpdf);
 	
 	/* ----------------------- The End ----------------------- */
 	printf("Calculation completed. The End.\n");
