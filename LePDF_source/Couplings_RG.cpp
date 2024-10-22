@@ -1,7 +1,46 @@
-/*One loop running of the elctromagnetic coupling alpha=e^2/4pi in the first phase of the evolution*/
+/*One loop running of the electromagnetic coupling alpha=e^2/4pi in the first phase of the evolution above the b threshold*/
+double alphaQEDb(double t){
+	double alpha;
+	alpha = aem0/(1-(b0QEDb*aem0*(t-t0)/2));
+	return alpha;
+}
+
+/*One loop running of the electromagnetic coupling alpha=e^2/4pi in the first phase of the evolution between the tau and b thresholds*/
+double alphaQEDtau(double t){
+	double alpha;
+	alpha = alphaQEDb(tb)/(1-(b0QEDtau*alphaQEDb(tb)*(t-tb)/2));
+	return alpha;
+}
+
+/*One loop running of the electromagnetic coupling alpha=e^2/4pi in the first phase of the evolution between the c and tau thresholds*/
+double alphaQEDc(double t){
+	double alpha;
+	alpha = alphaQEDtau(ttau)/(1-(b0QEDc*alphaQEDtau(ttau)*(t-ttau)/2));
+	return alpha;
+}
+
+/*One loop running of the electromagnetic coupling alpha=e^2/4pi in the first phase of the evolution below the c threshold*/
+double alphaQED0(double t){
+	double alpha;
+	alpha = alphaQEDc(tc)/(1-(b0QED0*alphaQEDc(tc)*(t-tc)/2));
+	return alpha;
+}
+
+/*One loop running of the electromagnetic coupling alpha=e^2/4pi in the first phase of the evolution according to the thresholds*/
 double alphaQED(double t){
 	double alpha;
-	alpha = aem0/(1-(b0QED*aem0*(t-t0)/2));
+	if(t<tc){
+	alpha = alphaQED0(t);
+	}
+	else if(t>=tc && t<ttau){
+	alpha = alphaQEDc(t);
+	}
+	else if(t>=ttau && t<tb){
+	alpha = alphaQEDtau(t);
+	}
+	else{
+	alpha = alphaQEDb(t);
+	}
 	return alpha;
 }
 

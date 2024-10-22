@@ -1,12 +1,12 @@
-int e5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg){
+int e5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg, double **fc, double **ftau){
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*eL*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*eR*/
 	fprintf(output, "%e	",0.0);  /*nue*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muR*/
 	fprintf(output, "%e	",0.0); /*numu*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taL*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taR*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taR*/
 	fprintf(output, "%e	",0.0); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eRb*/
@@ -14,8 +14,8 @@ int e5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, do
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muRb*/
 	fprintf(output, "%e	",0.0); /*numub*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taRb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taRb*/
 	fprintf(output, "%e	",0.0); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dR*/
@@ -23,8 +23,8 @@ int e5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, do
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sR*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cL*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cR*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cL*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cR*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bL*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dLb*/
@@ -33,8 +33,8 @@ int e5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, do
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uRb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bRb*/
 	fprintf(output, "%e	",grid[i]*fg[j][i]/2); /*gp*/
@@ -58,15 +58,15 @@ int e5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, do
 	return 0;
 }
 
-int eb5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg){
+int eb5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg, double **fc, double **ftau){
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eR*/
 	fprintf(output, "%e	",0.0);  /*nue*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muR*/
 	fprintf(output, "%e	",0.0); /*numu*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taL*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taR*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taR*/
 	fprintf(output, "%e	",0.0); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*eRb*/
@@ -74,8 +74,8 @@ int eb5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muRb*/
 	fprintf(output, "%e	",0.0); /*numub*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taRb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taRb*/
 	fprintf(output, "%e	",0.0); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dR*/
@@ -83,8 +83,8 @@ int eb5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sR*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cL*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cR*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cL*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cR*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bL*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dLb*/
@@ -93,8 +93,8 @@ int eb5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uRb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bRb*/
 	fprintf(output, "%e	",grid[i]*fg[j][i]/2); /*gp*/
@@ -118,15 +118,15 @@ int eb5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	return 0;
 }
 
-int mu5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg){
+int mu5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg, double **fc, double **ftau){
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eR*/
 	fprintf(output, "%e	",0.0);  /*nue*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*muL*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*muR*/
 	fprintf(output, "%e	",0.0); /*numu*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taL*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taR*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taR*/
 	fprintf(output, "%e	",0.0); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eRb*/
@@ -134,8 +134,8 @@ int mu5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muRb*/
 	fprintf(output, "%e	",0.0); /*numub*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taRb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taRb*/
 	fprintf(output, "%e	",0.0); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dR*/
@@ -143,8 +143,8 @@ int mu5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sR*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cL*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cR*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cL*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cR*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bL*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dLb*/
@@ -153,8 +153,8 @@ int mu5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uRb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bRb*/
 	fprintf(output, "%e	",grid[i]*fg[j][i]/2); /*gp*/
@@ -178,15 +178,15 @@ int mu5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	return 0;
 }
 
-int mub5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg){
+int mub5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg, double **fc, double **ftau){
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eR*/
 	fprintf(output, "%e	",0.0);  /*nue*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muR*/
 	fprintf(output, "%e	",0.0); /*numu*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taL*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taR*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taR*/
 	fprintf(output, "%e	",0.0); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eRb*/
@@ -194,8 +194,8 @@ int mub5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, 
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*muRb*/
 	fprintf(output, "%e	",0.0); /*numub*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taRb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taRb*/
 	fprintf(output, "%e	",0.0); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dR*/
@@ -203,8 +203,8 @@ int mub5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, 
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sR*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cL*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cR*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cL*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cR*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bL*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dLb*/
@@ -213,8 +213,8 @@ int mub5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, 
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uRb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bRb*/
 	fprintf(output, "%e	",grid[i]*fg[j][i]/2); /*gp*/
@@ -238,15 +238,15 @@ int mub5FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, 
 	return 0;
 }
 
-int e6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg){
+int e6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg, double **fc, double **ftau){
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*eL*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*eR*/
 	fprintf(output, "%e	",0.0);  /*nue*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muR*/
 	fprintf(output, "%e	",0.0); /*numu*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taL*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taR*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taR*/
 	fprintf(output, "%e	",0.0); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eRb*/
@@ -254,8 +254,8 @@ int e6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, do
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muRb*/
 	fprintf(output, "%e	",0.0); /*numub*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taRb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taRb*/
 	fprintf(output, "%e	",0.0); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dR*/
@@ -263,8 +263,8 @@ int e6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, do
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sR*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cL*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cR*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cL*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cR*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bL*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bR*/
 	fprintf(output, "%e	",0.0); /*tL*/
@@ -275,8 +275,8 @@ int e6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, do
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uRb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bRb*/
 	fprintf(output, "%e	",0.0); /*tLb*/
@@ -302,15 +302,15 @@ int e6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, do
 	return 0;
 }
 
-int eb6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg){
+int eb6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg, double **fc, double **ftau){
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eR*/
 	fprintf(output, "%e	",0.0);  /*nue*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muR*/
 	fprintf(output, "%e	",0.0); /*numu*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taL*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taR*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taR*/
 	fprintf(output, "%e	",0.0); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*eRb*/
@@ -318,8 +318,8 @@ int eb6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muRb*/
 	fprintf(output, "%e	",0.0); /*numub*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taRb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taRb*/
 	fprintf(output, "%e	",0.0); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dR*/
@@ -327,8 +327,8 @@ int eb6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sR*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cL*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cR*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cL*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cR*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bL*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bR*/
 	fprintf(output, "%e	",0.0); /*tL*/
@@ -339,8 +339,8 @@ int eb6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uRb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bRb*/
 	fprintf(output, "%e	",0.0); /*tLb*/
@@ -366,15 +366,15 @@ int eb6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	return 0;
 }
 
-int mu6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg){
+int mu6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg, double **fc, double **ftau){
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eR*/
 	fprintf(output, "%e	",0.0);  /*nue*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*muL*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*muR*/
 	fprintf(output, "%e	",0.0); /*numu*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taL*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taR*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taR*/
 	fprintf(output, "%e	",0.0); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eRb*/
@@ -382,8 +382,8 @@ int mu6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muRb*/
 	fprintf(output, "%e	",0.0); /*numub*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taRb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taRb*/
 	fprintf(output, "%e	",0.0); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dR*/
@@ -391,8 +391,8 @@ int mu6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sR*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cL*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cR*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cL*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cR*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bL*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bR*/
 	fprintf(output, "%e	",0.0); /*tL*/
@@ -403,8 +403,8 @@ int mu6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uRb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bRb*/
 	fprintf(output, "%e	",0.0); /*tLb*/
@@ -430,15 +430,15 @@ int mu6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, d
 	return 0;
 }
 
-int mub6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg){
+int mub6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, double **fu, double **fd, double **fb, double **fph, double **fg, double **fc, double **ftau){
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eR*/
 	fprintf(output, "%e	",0.0);  /*nue*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muL*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*muR*/
 	fprintf(output, "%e	",0.0); /*numu*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taL*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taR*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taR*/
 	fprintf(output, "%e	",0.0); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*eRb*/
@@ -446,8 +446,8 @@ int mub6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, 
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fm[j][i]/2); /*muRb*/
 	fprintf(output, "%e	",0.0); /*numub*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fe[j][i]/2); /*taRb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftau[j][i]/2); /*taRb*/
 	fprintf(output, "%e	",0.0); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*dR*/
@@ -455,8 +455,8 @@ int mub6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, 
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uR*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sL*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sR*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cL*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cR*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cL*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cR*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bL*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bR*/
 	fprintf(output, "%e	",0.0); /*tL*/
@@ -467,8 +467,8 @@ int mub6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, 
 	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*uRb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fd[j][i]/2); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fu[j][i]/2); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fc[j][i]/2); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fb[j][i]/2); /*bRb*/
 	fprintf(output, "%e	",0.0); /*tLb*/
@@ -494,43 +494,43 @@ int mub6FS0(int i, int j, FILE *output, double *grid, double **fe, double **fm, 
 	return 0;
 }
 
-int e5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl){
+int e5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl, double **ftal, double **ftalb, double **ftar, double **ftarb, double **fnuta, double **fnutab, double **fcl, double **fclb, double **fcr, double **fcrb, double **fsl, double **fslb){
 	fprintf(output, "%e	",grid[i]*fml[j][i]); /*eL*/
 	fprintf(output, "%e	",grid[i]*fmr[j][i]); /*eR*/
 	fprintf(output, "%e	",grid[i]*fnum[j][i]); /*nue*/
 	fprintf(output, "%e	",grid[i]*fel[j][i]);  /*muL*/
 	fprintf(output, "%e	",grid[i]*fer[j][i]); /*muR*/
 	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*numu*/
-	fprintf(output, "%e	",grid[i]*fel[j][i]); /*taL*/
-	fprintf(output, "%e	",grid[i]*fer[j][i]); /*taR*/
-	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nuta*/
+	fprintf(output, "%e	",grid[i]*ftal[j][i]); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftar[j][i]); /*taR*/
+	fprintf(output, "%e	",grid[i]*fnuta[j][i]); /*nuta*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*eLb*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*eRb*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nueb*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*muLb*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*muRb*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*numub*/
-	fprintf(output, "%e	",grid[i]*felb[j][i]); /*taLb*/
-	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*taRb*/
-	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nutab*/
+	fprintf(output, "%e	",grid[i]*ftalb[j][i]); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftarb[j][i]); /*taRb*/
+	fprintf(output, "%e	",grid[i]*fnutab[j][i]); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*dL*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*dR*/
 	fprintf(output, "%e	",grid[i]*ful[j][i]); /*uL*/
 	fprintf(output, "%e	",grid[i]*fur[j][i]); /*uR*/
-	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*sL*/
+	fprintf(output, "%e	",grid[i]*fsl[j][i]); /*sL*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*sR*/
-	fprintf(output, "%e	",grid[i]*ful[j][i]); /*cL*/
-	fprintf(output, "%e	",grid[i]*fur[j][i]); /*cR*/
+	fprintf(output, "%e	",grid[i]*fcl[j][i]); /*cL*/
+	fprintf(output, "%e	",grid[i]*fcr[j][i]); /*cR*/
 	fprintf(output, "%e	",grid[i]*fbl[j][i]); /*bL*/
 	fprintf(output, "%e	",grid[i]*fbr[j][i]); /*bR*/
 	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*dLb*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*dRb*/
 	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*uLb*/
 	fprintf(output, "%e	",grid[i]*furb[j][i]); /*uRb*/
-	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*sLb*/
+	fprintf(output, "%e	",grid[i]*fslb[j][i]); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*cLb*/
-	fprintf(output, "%e	",grid[i]*furb[j][i]); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fclb[j][i]); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fcrb[j][i]); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fblb[j][i]); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fbrb[j][i]); /*bRb*/
 	fprintf(output, "%e	",grid[i]*fgp[j][i]); /*gp*/
@@ -554,43 +554,43 @@ int e5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, 
 	return 0;
 }
 
-int eb5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl){
+int eb5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl, double **ftal, double **ftalb, double **ftar, double **ftarb, double **fnuta, double **fnutab, double **fcl, double **fclb, double **fcr, double **fcrb, double **fsl, double **fslb){
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*eL*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*eR*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nue*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]);  /*muL*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*muR*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*numu*/
-	fprintf(output, "%e	",grid[i]*felb[j][i]); /*taL*/
-	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*taR*/
-	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nuta*/
+	fprintf(output, "%e	",grid[i]*ftalb[j][i]); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftarb[j][i]); /*taR*/
+	fprintf(output, "%e	",grid[i]*fnutab[j][i]); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fml[j][i]); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fmr[j][i]); /*eRb*/
 	fprintf(output, "%e	",grid[i]*fnum[j][i]); /*nueb*/
 	fprintf(output, "%e	",grid[i]*fel[j][i]); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fer[j][i]); /*muRb*/
 	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*numub*/
-	fprintf(output, "%e	",grid[i]*fel[j][i]); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fer[j][i]); /*taRb*/
-	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nutab*/
+	fprintf(output, "%e	",grid[i]*ftal[j][i]); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftar[j][i]); /*taRb*/
+	fprintf(output, "%e	",grid[i]*fnuta[j][i]); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*dL*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*dR*/
 	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*uL*/
 	fprintf(output, "%e	",grid[i]*furb[j][i]); /*uR*/
-	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*sL*/
+	fprintf(output, "%e	",grid[i]*fslb[j][i]); /*sL*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*sR*/
-	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*cL*/
-	fprintf(output, "%e	",grid[i]*furb[j][i]); /*cR*/
+	fprintf(output, "%e	",grid[i]*fclb[j][i]); /*cL*/
+	fprintf(output, "%e	",grid[i]*fcrb[j][i]); /*cR*/
 	fprintf(output, "%e	",grid[i]*fblb[j][i]); /*bL*/
 	fprintf(output, "%e	",grid[i]*fbrb[j][i]); /*bR*/
 	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*dLb*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*dRb*/
 	fprintf(output, "%e	",grid[i]*ful[j][i]); /*uLb*/
 	fprintf(output, "%e	",grid[i]*fur[j][i]); /*uRb*/
-	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*sLb*/
+	fprintf(output, "%e	",grid[i]*fsl[j][i]); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*sRb*/
-	fprintf(output, "%e	",grid[i]*ful[j][i]); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fur[j][i]); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fcl[j][i]); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fcr[j][i]); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fbl[j][i]); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fbr[j][i]); /*bRb*/
 	fprintf(output, "%e	",grid[i]*fgm[j][i]); /*gp*/
@@ -614,43 +614,43 @@ int eb5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb,
 	return 0;
 }
 
-int mu5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl){
+int mu5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl, double **ftal, double **ftalb, double **ftar, double **ftarb, double **fnuta, double **fnutab, double **fcl, double **fclb, double **fcr, double **fcrb, double **fsl, double **fslb){
 	fprintf(output, "%e	",grid[i]*fel[j][i]); /*eL*/
 	fprintf(output, "%e	",grid[i]*fer[j][i]); /*eR*/
 	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nue*/
 	fprintf(output, "%e	",grid[i]*fml[j][i]);  /*muL*/
 	fprintf(output, "%e	",grid[i]*fmr[j][i]); /*muR*/
 	fprintf(output, "%e	",grid[i]*fnum[j][i]); /*numu*/
-	fprintf(output, "%e	",grid[i]*fel[j][i]); /*taL*/
-	fprintf(output, "%e	",grid[i]*fer[j][i]); /*taR*/
-	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nuta*/
+	fprintf(output, "%e	",grid[i]*ftal[j][i]); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftar[j][i]); /*taR*/
+	fprintf(output, "%e	",grid[i]*fnuta[j][i]); /*nuta*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*eLb*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*eRb*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nueb*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*muLb*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*muRb*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*numub*/
-	fprintf(output, "%e	",grid[i]*felb[j][i]); /*taLb*/
-	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*taRb*/
-	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nutab*/
+	fprintf(output, "%e	",grid[i]*ftalb[j][i]); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftarb[j][i]); /*taRb*/
+	fprintf(output, "%e	",grid[i]*fnutab[j][i]); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*dL*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*dR*/
 	fprintf(output, "%e	",grid[i]*ful[j][i]); /*uL*/
 	fprintf(output, "%e	",grid[i]*fur[j][i]); /*uR*/
-	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*sL*/
+	fprintf(output, "%e	",grid[i]*fsl[j][i]); /*sL*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*sR*/
-	fprintf(output, "%e	",grid[i]*ful[j][i]); /*cL*/
-	fprintf(output, "%e	",grid[i]*fur[j][i]); /*cR*/
+	fprintf(output, "%e	",grid[i]*fcl[j][i]); /*cL*/
+	fprintf(output, "%e	",grid[i]*fcr[j][i]); /*cR*/
 	fprintf(output, "%e	",grid[i]*fbl[j][i]); /*bL*/
 	fprintf(output, "%e	",grid[i]*fbr[j][i]); /*bR*/
 	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*dLb*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*dRb*/
 	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*uLb*/
 	fprintf(output, "%e	",grid[i]*furb[j][i]); /*uRb*/
-	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*sLb*/
+	fprintf(output, "%e	",grid[i]*fslb[j][i]); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*cLb*/
-	fprintf(output, "%e	",grid[i]*furb[j][i]); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fclb[j][i]); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fcrb[j][i]); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fblb[j][i]); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fbrb[j][i]); /*bRb*/
 	fprintf(output, "%e	",grid[i]*fgp[j][i]); /*gp*/
@@ -674,43 +674,43 @@ int mu5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb,
 	return 0;
 }
 
-int mub5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl){
+int mub5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl, double **ftal, double **ftalb, double **ftar, double **ftarb, double **fnuta, double **fnutab, double **fcl, double **fclb, double **fcr, double **fcrb, double **fsl, double **fslb){
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*eL*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*eR*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nue*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]);  /*muL*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*muR*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*numu*/
-	fprintf(output, "%e	",grid[i]*felb[j][i]); /*taL*/
-	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*taR*/
-	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nuta*/
+	fprintf(output, "%e	",grid[i]*ftalb[j][i]); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftarb[j][i]); /*taR*/
+	fprintf(output, "%e	",grid[i]*fnutab[j][i]); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fel[j][i]); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fer[j][i]); /*eRb*/
 	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nueb*/
 	fprintf(output, "%e	",grid[i]*fml[j][i]); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fmr[j][i]); /*muRb*/
 	fprintf(output, "%e	",grid[i]*fnum[j][i]); /*numub*/
-	fprintf(output, "%e	",grid[i]*fel[j][i]); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fer[j][i]); /*taRb*/
-	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nutab*/
+	fprintf(output, "%e	",grid[i]*ftal[j][i]); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftar[j][i]); /*taRb*/
+	fprintf(output, "%e	",grid[i]*fnuta[j][i]); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*dL*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*dR*/
 	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*uL*/
 	fprintf(output, "%e	",grid[i]*furb[j][i]); /*uR*/
-	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*sL*/
+	fprintf(output, "%e	",grid[i]*fslb[j][i]); /*sL*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*sR*/
-	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*cL*/
-	fprintf(output, "%e	",grid[i]*furb[j][i]); /*cR*/
+	fprintf(output, "%e	",grid[i]*fclb[j][i]); /*cL*/
+	fprintf(output, "%e	",grid[i]*fcrb[j][i]); /*cR*/
 	fprintf(output, "%e	",grid[i]*fblb[j][i]); /*bL*/
 	fprintf(output, "%e	",grid[i]*fbrb[j][i]); /*bR*/
 	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*dLb*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*dRb*/
 	fprintf(output, "%e	",grid[i]*ful[j][i]); /*uLb*/
 	fprintf(output, "%e	",grid[i]*fur[j][i]); /*uRb*/
-	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*sLb*/
+	fprintf(output, "%e	",grid[i]*fsl[j][i]); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*sRb*/
-	fprintf(output, "%e	",grid[i]*ful[j][i]); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fur[j][i]); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fcl[j][i]); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fcr[j][i]); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fbl[j][i]); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fbr[j][i]); /*bRb*/
 	fprintf(output, "%e	",grid[i]*fgm[j][i]); /*gp*/
@@ -734,33 +734,33 @@ int mub5FS(int i, int j, FILE *output, double *grid, double **fel, double **felb
 	return 0;
 }
 
-int e6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl){
+int e6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl, double **ftal, double **ftalb, double **ftar, double **ftarb, double **fnuta, double **fnutab, double **fcl, double **fclb, double **fcr, double **fcrb, double **fsl, double **fslb){
 	fprintf(output, "%e	",grid[i]*fml[j][i]); /*eL*/
 	fprintf(output, "%e	",grid[i]*fmr[j][i]); /*eR*/
 	fprintf(output, "%e	",grid[i]*fnum[j][i]); /*nue*/
 	fprintf(output, "%e	",grid[i]*fel[j][i]);  /*muL*/
 	fprintf(output, "%e	",grid[i]*fer[j][i]); /*muR*/
 	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*numu*/
-	fprintf(output, "%e	",grid[i]*fel[j][i]); /*taL*/
-	fprintf(output, "%e	",grid[i]*fer[j][i]); /*taR*/
-	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nuta*/
+	fprintf(output, "%e	",grid[i]*ftal[j][i]); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftar[j][i]); /*taR*/
+	fprintf(output, "%e	",grid[i]*fnuta[j][i]); /*nuta*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*eLb*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*eRb*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nueb*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*muLb*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*muRb*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*numub*/
-	fprintf(output, "%e	",grid[i]*felb[j][i]); /*taLb*/
-	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*taRb*/
-	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nutab*/
+	fprintf(output, "%e	",grid[i]*ftalb[j][i]); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftarb[j][i]); /*taRb*/
+	fprintf(output, "%e	",grid[i]*fnutab[j][i]); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*dL*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*dR*/
 	fprintf(output, "%e	",grid[i]*ful[j][i]); /*uL*/
 	fprintf(output, "%e	",grid[i]*fur[j][i]); /*uR*/
-	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*sL*/
+	fprintf(output, "%e	",grid[i]*fsl[j][i]); /*sL*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*sR*/
-	fprintf(output, "%e	",grid[i]*ful[j][i]); /*cL*/
-	fprintf(output, "%e	",grid[i]*fur[j][i]); /*cR*/
+	fprintf(output, "%e	",grid[i]*fcl[j][i]); /*cL*/
+	fprintf(output, "%e	",grid[i]*fcr[j][i]); /*cR*/
 	fprintf(output, "%e	",grid[i]*fbl[j][i]); /*bL*/
 	fprintf(output, "%e	",grid[i]*fbr[j][i]); /*bR*/
 	fprintf(output, "%e	",grid[i]*ftl[j][i]); /*tL*/
@@ -769,10 +769,10 @@ int e6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, 
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*dRb*/
 	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*uLb*/
 	fprintf(output, "%e	",grid[i]*furb[j][i]); /*uRb*/
-	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*sLb*/
+	fprintf(output, "%e	",grid[i]*fslb[j][i]); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*cLb*/
-	fprintf(output, "%e	",grid[i]*furb[j][i]); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fclb[j][i]); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fcrb[j][i]); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fblb[j][i]); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fbrb[j][i]); /*bRb*/
 	fprintf(output, "%e	",grid[i]*ftlb[j][i]); /*tLb*/
@@ -798,33 +798,33 @@ int e6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, 
 	return 0;
 }
 
-int eb6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl){
+int eb6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl, double **ftal, double **ftalb, double **ftar, double **ftarb, double **fnuta, double **fnutab, double **fcl, double **fclb, double **fcr, double **fcrb, double **fsl, double **fslb){
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*eL*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*eR*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nue*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]);  /*muL*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*muR*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*numu*/
-	fprintf(output, "%e	",grid[i]*felb[j][i]); /*taL*/
-	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*taR*/
-	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nuta*/
+	fprintf(output, "%e	",grid[i]*ftalb[j][i]); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftarb[j][i]); /*taR*/
+	fprintf(output, "%e	",grid[i]*fnutab[j][i]); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fml[j][i]); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fmr[j][i]); /*eRb*/
 	fprintf(output, "%e	",grid[i]*fnum[j][i]); /*nueb*/
 	fprintf(output, "%e	",grid[i]*fel[j][i]); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fer[j][i]); /*muRb*/
 	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*numub*/
-	fprintf(output, "%e	",grid[i]*fel[j][i]); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fer[j][i]); /*taRb*/
-	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nutab*/
+	fprintf(output, "%e	",grid[i]*ftal[j][i]); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftar[j][i]); /*taRb*/
+	fprintf(output, "%e	",grid[i]*fnuta[j][i]); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*dL*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*dR*/
 	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*uL*/
 	fprintf(output, "%e	",grid[i]*furb[j][i]); /*uR*/
-	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*sL*/
+	fprintf(output, "%e	",grid[i]*fslb[j][i]); /*sL*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*sR*/
-	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*cL*/
-	fprintf(output, "%e	",grid[i]*furb[j][i]); /*cR*/
+	fprintf(output, "%e	",grid[i]*fclb[j][i]); /*cL*/
+	fprintf(output, "%e	",grid[i]*fcrb[j][i]); /*cR*/
 	fprintf(output, "%e	",grid[i]*fblb[j][i]); /*bL*/
 	fprintf(output, "%e	",grid[i]*fbrb[j][i]); /*bR*/
 	fprintf(output, "%e	",grid[i]*ftlb[j][i]); /*tL*/
@@ -833,10 +833,10 @@ int eb6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb,
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*dRb*/
 	fprintf(output, "%e	",grid[i]*ful[j][i]); /*uLb*/
 	fprintf(output, "%e	",grid[i]*fur[j][i]); /*uRb*/
-	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*sLb*/
+	fprintf(output, "%e	",grid[i]*fsl[j][i]); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*sRb*/
-	fprintf(output, "%e	",grid[i]*ful[j][i]); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fur[j][i]); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fcl[j][i]); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fcr[j][i]); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fbl[j][i]); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fbr[j][i]); /*bRb*/
 	fprintf(output, "%e	",grid[i]*ftl[j][i]); /*tLb*/
@@ -862,33 +862,33 @@ int eb6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb,
 	return 0;
 }
 
-int mu6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl){
+int mu6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl, double **ftal, double **ftalb, double **ftar, double **ftarb, double **fnuta, double **fnutab, double **fcl, double **fclb, double **fcr, double **fcrb, double **fsl, double **fslb){
 	fprintf(output, "%e	",grid[i]*fel[j][i]); /*eL*/
 	fprintf(output, "%e	",grid[i]*fer[j][i]); /*eR*/
 	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nue*/
 	fprintf(output, "%e	",grid[i]*fml[j][i]);  /*muL*/
 	fprintf(output, "%e	",grid[i]*fmr[j][i]); /*muR*/
 	fprintf(output, "%e	",grid[i]*fnum[j][i]); /*numu*/
-	fprintf(output, "%e	",grid[i]*fel[j][i]); /*taL*/
-	fprintf(output, "%e	",grid[i]*fer[j][i]); /*taR*/
-	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nuta*/
+	fprintf(output, "%e	",grid[i]*ftal[j][i]); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftar[j][i]); /*taR*/
+	fprintf(output, "%e	",grid[i]*fnuta[j][i]); /*nuta*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*eLb*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*eRb*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nueb*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*muLb*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*muRb*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*numub*/
-	fprintf(output, "%e	",grid[i]*felb[j][i]); /*taLb*/
-	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*taRb*/
-	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nutab*/
+	fprintf(output, "%e	",grid[i]*ftalb[j][i]); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftarb[j][i]); /*taRb*/
+	fprintf(output, "%e	",grid[i]*fnutab[j][i]); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*dL*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*dR*/
 	fprintf(output, "%e	",grid[i]*ful[j][i]); /*uL*/
 	fprintf(output, "%e	",grid[i]*fur[j][i]); /*uR*/
-	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*sL*/
+	fprintf(output, "%e	",grid[i]*fsl[j][i]); /*sL*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*sR*/
-	fprintf(output, "%e	",grid[i]*ful[j][i]); /*cL*/
-	fprintf(output, "%e	",grid[i]*fur[j][i]); /*cR*/
+	fprintf(output, "%e	",grid[i]*fcl[j][i]); /*cL*/
+	fprintf(output, "%e	",grid[i]*fcr[j][i]); /*cR*/
 	fprintf(output, "%e	",grid[i]*fbl[j][i]); /*bL*/
 	fprintf(output, "%e	",grid[i]*fbr[j][i]); /*bR*/
 	fprintf(output, "%e	",grid[i]*ftl[j][i]); /*tL*/
@@ -897,10 +897,10 @@ int mu6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb,
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*dRb*/
 	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*uLb*/
 	fprintf(output, "%e	",grid[i]*furb[j][i]); /*uRb*/
-	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*sLb*/
+	fprintf(output, "%e	",grid[i]*fslb[j][i]); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*sRb*/
-	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*cLb*/
-	fprintf(output, "%e	",grid[i]*furb[j][i]); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fclb[j][i]); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fcrb[j][i]); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fblb[j][i]); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fbrb[j][i]); /*bRb*/
 	fprintf(output, "%e	",grid[i]*ftlb[j][i]); /*tLb*/
@@ -926,33 +926,33 @@ int mu6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb,
 	return 0;
 }
 
-int mub6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl){
+int mub6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb, double **fml, double **fnue, double **fnueb, double **fnum, double **fer, double **ferb, double **fmr, double **ful, double **fulb, double **ftl, double **ftlb, double **fdl, double **fdlb, double **fbl, double **fblb, double **fur, double **furb, double **ftr, double **ftrb, double **fdr, double **fdrb, double **fbr, double **fbrb, double **fh, double **fwpl, double **fwml, double **fzl, double **fwpp, double **fwpm, double **fwmp, double **fwmm, double **fzp, double **fzm, double **fphp, double **fphm, double **fzphp, double **fzphm, double **fgp, double **fgm, double **fhzl, double **ftal, double **ftalb, double **ftar, double **ftarb, double **fnuta, double **fnutab, double **fcl, double **fclb, double **fcr, double **fcrb, double **fsl, double **fslb){
 	fprintf(output, "%e	",grid[i]*felb[j][i]); /*eL*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*eR*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nue*/
 	fprintf(output, "%e	",grid[i]*felb[j][i]);  /*muL*/
 	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*muR*/
 	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*numu*/
-	fprintf(output, "%e	",grid[i]*felb[j][i]); /*taL*/
-	fprintf(output, "%e	",grid[i]*ferb[j][i]); /*taR*/
-	fprintf(output, "%e	",grid[i]*fnueb[j][i]); /*nuta*/
+	fprintf(output, "%e	",grid[i]*ftalb[j][i]); /*taL*/
+	fprintf(output, "%e	",grid[i]*ftarb[j][i]); /*taR*/
+	fprintf(output, "%e	",grid[i]*fnutab[j][i]); /*nuta*/
 	fprintf(output, "%e	",grid[i]*fel[j][i]); /*eLb*/
 	fprintf(output, "%e	",grid[i]*fer[j][i]); /*eRb*/
 	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nueb*/
 	fprintf(output, "%e	",grid[i]*fml[j][i]); /*muLb*/
 	fprintf(output, "%e	",grid[i]*fmr[j][i]); /*muRb*/
 	fprintf(output, "%e	",grid[i]*fnum[j][i]); /*numub*/
-	fprintf(output, "%e	",grid[i]*fel[j][i]); /*taLb*/
-	fprintf(output, "%e	",grid[i]*fer[j][i]); /*taRb*/
-	fprintf(output, "%e	",grid[i]*fnue[j][i]); /*nutab*/
+	fprintf(output, "%e	",grid[i]*ftal[j][i]); /*taLb*/
+	fprintf(output, "%e	",grid[i]*ftar[j][i]); /*taRb*/
+	fprintf(output, "%e	",grid[i]*fnuta[j][i]); /*nutab*/
 	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*dL*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*dR*/
 	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*uL*/
 	fprintf(output, "%e	",grid[i]*furb[j][i]); /*uR*/
-	fprintf(output, "%e	",grid[i]*fdlb[j][i]); /*sL*/
+	fprintf(output, "%e	",grid[i]*fslb[j][i]); /*sL*/
 	fprintf(output, "%e	",grid[i]*fdrb[j][i]); /*sR*/
-	fprintf(output, "%e	",grid[i]*fulb[j][i]); /*cL*/
-	fprintf(output, "%e	",grid[i]*furb[j][i]); /*cR*/
+	fprintf(output, "%e	",grid[i]*fclb[j][i]); /*cL*/
+	fprintf(output, "%e	",grid[i]*fcrb[j][i]); /*cR*/
 	fprintf(output, "%e	",grid[i]*fblb[j][i]); /*bL*/
 	fprintf(output, "%e	",grid[i]*fbrb[j][i]); /*bR*/
 	fprintf(output, "%e	",grid[i]*ftlb[j][i]); /*tL*/
@@ -961,10 +961,10 @@ int mub6FS(int i, int j, FILE *output, double *grid, double **fel, double **felb
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*dRb*/
 	fprintf(output, "%e	",grid[i]*ful[j][i]); /*uLb*/
 	fprintf(output, "%e	",grid[i]*fur[j][i]); /*uRb*/
-	fprintf(output, "%e	",grid[i]*fdl[j][i]); /*sLb*/
+	fprintf(output, "%e	",grid[i]*fsl[j][i]); /*sLb*/
 	fprintf(output, "%e	",grid[i]*fdr[j][i]); /*sRb*/
-	fprintf(output, "%e	",grid[i]*ful[j][i]); /*cLb*/
-	fprintf(output, "%e	",grid[i]*fur[j][i]); /*cRb*/
+	fprintf(output, "%e	",grid[i]*fcl[j][i]); /*cLb*/
+	fprintf(output, "%e	",grid[i]*fcr[j][i]); /*cRb*/
 	fprintf(output, "%e	",grid[i]*fbl[j][i]); /*bLb*/
 	fprintf(output, "%e	",grid[i]*fbr[j][i]); /*bRb*/
 	fprintf(output, "%e	",grid[i]*ftl[j][i]); /*tLb*/

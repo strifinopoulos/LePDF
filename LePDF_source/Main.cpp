@@ -22,7 +22,7 @@ int lepton = 1; /* Defines the type of lepton beam: 0 = electron, any other inte
 /*for electron:  int lepton=0; */
 
 /* CHOOSE THE FLAVOUR SCHEME */
-int FS = 6; /* Defines the flavour scheme: 5 = without top, any other integer = with top */
+int FS = 5; /* Defines the flavour scheme: 5 = without top, any other integer = with top */
 
 /* CHOOSE THE NUMBER OF x-GRID POINTS */
 int Nx = 1001; /* Number of x-grid points. Notice that in our paper we defined Nx to be the number of bins, so here Nx is just shifted by 1 */
@@ -52,6 +52,9 @@ double mew = 80.379; /* Matching scale at which we include the full EW evolution
 double mh = 125.25; /* Higgs mass */
 double mt = 163; /* Top quark mass */
 double mb = 4.18; /* b quark mass (only for threshold) */
+double mtau = 1.78; /* tau mass (only for threshold) */
+double mc = 1.29; /* c quark mass (only for threshold) */
+
 
 double pi = 3.1415926536;
 
@@ -80,10 +83,13 @@ double leptonmass(int l){
 
 double m0 = leptonmass(lepton); /*Mass of the valence lepton. It is set to the electron/muon mass for the computation of the electron/muon PDFs. */
 
+/*Beta function coefficients for U(1)_em according to the c, tau and b thresholds*/
+double b0QED0 = 8/(3*pi); /*below the c threshold*/
+double b0QEDc = 32/(9*pi); /*between the c and tau thresholds*/
+double b0QEDtau = 38/(9*pi); /*between the tau and b thresholds*/
+double b0QEDb = 40/(9*pi); /*above the b threshold*/
 
-
-/*Beta function coefficients for U(1)_em, U(1)_Y and SU(2)_L*/
-double b0QED = 11/(6*pi); /*This one is computed for the first phase, with 3 leptons and the quarks u, d, s, c, b*/
+/*Beta function coefficients for U(1)_Y and SU(2)_L*/
 double b01 = 41/(12*pi);
 double b02 = 19/(12*pi);
 
@@ -152,6 +158,8 @@ double tW = tFromGeV(mw); /*t0 = 2log(Mw/Mmu), i.e. t at W mass*/
 double tz = tFromGeV(mz); /*tz = 2log(Mz/Mmu), i.e. t at Z mass*/
 double th = tFromGeV(mh); /*th = 2log(Mh/Mmu), i.e. t at H mass*/
 double tb = tFromGeV(mb); /*tb = 2log(Mb/Mmu), i.e. t at b mass*/
+double ttau = tFromGeV(mtau); /*ttau = 2log(Mtau/Mmu), i.e. t at tau mass*/
+double tc = tFromGeV(mc); /*tb = 2log(Mc/Mmu), i.e. t at c mass*/
 double tQCD = tFromGeV(0.7); /*t at which QCD starts contributing*/
 
 double ttchoice(int s){
@@ -209,8 +217,8 @@ int main(){
 	int i,j; /*Variables to be used in the for cycles*/
 	int iw; /*Index corresponding to the time at which we start writing the PDFs in the LHAPDF file. It is the integer part of twrite/dt0*/
 	iw = int(twrite/dt0);
-	int N0 = 7; /*number of PDFs in QED+QCD*/
-	int N = 42; /*number of PDFs in the full EW evolution*/
+	int N0 = 9; /*number of PDFs in QED+QCD*/
+	int N = 54; /*number of PDFs in the full EW evolution*/
 	int Nttot = Nt0+Nt-1; /*total number of values of t at which we compute the PDFs (the -1 is due to the fact that the last value of the first phase and the first of the second are the same*/
 	
 
@@ -233,14 +241,16 @@ int main(){
 	/* ----------------------- Memory Allocation ----------------------- */
 	
 	/*Declaration and allocation of the matrices with the PDFs. The first line in the following is for QED+QCD, the second one for the full SM. We initially set all the entries to zero*/
-	double **fm,**fu,**fd,**fph,**fg,**fe,**fb;
-	double **fwpp,**fwpm,**fwmp,**fwmm,**fwpl,**fwml,**fzp,**fzm,**fzl,**fphp,**fphm,**fzphp,**fzphm,**fgp,**fgm,**fh,**fhzl,**fel,**felb,**fml,**fer,**ferb,**fmr,**fnue,**fnueb,**fnum,**ful,**fulb,**ftl,**ftlb,**fdl,**fdlb,**fbl,**fblb,**fur,**furb,**ftr,**ftrb,**fdr,**fdrb,**fbr,**fbrb;
+	double **fm,**fu,**fc,**fd,**fph,**fg,**fe,**ftau,**fb;
+	double **fwpp,**fwpm,**fwmp,**fwmm,**fwpl,**fwml,**fzp,**fzm,**fzl,**fphp,**fphm,**fzphp,**fzphm,**fgp,**fgm,**fh,**fhzl,**fel,**felb,**fml,**ftal,**ftalb,**fer,**ferb,**fmr,**ftar,**ftarb,**fnue,**fnueb,**fnum,**fnuta,**fnutab,**ful,**fulb,**fcl,**fclb,**ftl,**ftlb,**fdl,**fdlb,**fsl,**fslb,**fbl,**fblb,**fur,**furb,**fcr,**fcrb,**ftr,**ftrb,**fdr,**fdrb,**fbr,**fbrb;
 	fm =zeros(Nt0,Nx);
 	fu =zeros(Nt0,Nx);
+	fc =zeros(Nt0,Nx);
 	fd =zeros(Nt0,Nx);
 	fph =zeros(Nt0,Nx);
 	fg =zeros(Nt0,Nx);
 	fe =zeros(Nt0,Nx);
+	ftau =zeros(Nt0,Nx);
 	fb =zeros(Nt0,Nx);
 	fwpp =zeros(Nt,Nx);
 	fwpm =zeros(Nt,Nx);
@@ -262,16 +272,26 @@ int main(){
 	fel =zeros(Nt,Nx);
 	felb =zeros(Nt,Nx);
 	fml =zeros(Nt,Nx);
+	ftal =zeros(Nt,Nx);
+	ftalb =zeros(Nt,Nx);
 	fer =zeros(Nt,Nx);
 	ferb =zeros(Nt,Nx);
 	fmr =zeros(Nt,Nx);
+	ftar =zeros(Nt,Nx);
+	ftarb =zeros(Nt,Nx);
 	fnue =zeros(Nt,Nx);
 	fnum =zeros(Nt,Nx);
+	fnuta =zeros(Nt,Nx);
 	fnueb =zeros(Nt,Nx);
+	fnutab =zeros(Nt,Nx);
 	ful =zeros(Nt,Nx);
 	fulb =zeros(Nt,Nx);
 	fur =zeros(Nt,Nx);
 	furb =zeros(Nt,Nx);
+	fcl =zeros(Nt,Nx);
+	fclb =zeros(Nt,Nx);
+	fcr =zeros(Nt,Nx);
+	fcrb =zeros(Nt,Nx);
 	ftl =zeros(Nt,Nx);
 	ftlb =zeros(Nt,Nx);
 	ftr =zeros(Nt,Nx);
@@ -280,6 +300,8 @@ int main(){
 	fdlb =zeros(Nt,Nx);
 	fdr =zeros(Nt,Nx);
 	fdrb=zeros(Nt,Nx);
+	fsl =zeros(Nt,Nx);
+	fslb =zeros(Nt,Nx);
 	fbl =zeros(Nt,Nx);
 	fblb =zeros(Nt,Nx);
 	fbr =zeros(Nt,Nx);
@@ -399,27 +421,27 @@ int main(){
 	for(i=0;i<Nt0-1;i++){ /*Cycle over t*/
 		printf("QED+QCD evolution: step %d of %d\n",i+1,Nt0-1);
 		for(j=0;j<Nx-1;j++){ /*Cycle over x: we compute the four Runge-Kutta coefficients corresponding to each f(x_j,t_i). RKj0 contains the contributions from x_j, RK0 from x_k*/
-			k01 = RKj0(i,j,Nx,i*dt0,dt0,grid,deltagrid,fm[i][j],fu[i][j],fd[i][j],fph[i][j],fg[i][j],fe[i][j],fb[i][j],k01,newterm(grid,deltagrid,j,Nx),talpha);
+			k01 = RKj0(i,j,Nx,i*dt0,dt0,grid,deltagrid,fm[i][j],fu[i][j],fd[i][j],fph[i][j],fg[i][j],fe[i][j],fb[i][j],fc[i][j],ftau[i][j],k01,newterm(grid,deltagrid,j,Nx),talpha);
 			for(k=j+1;k<Nx;k++){
-				k01 = RK0(i,j,k,Nx,i*dt0,dt0,grid,deltagrid,fm[i][k],fu[i][k],fd[i][k],fph[i][k],fg[i][k],fe[i][k],fb[i][k],k01,talpha);
+				k01 = RK0(i,j,k,Nx,i*dt0,dt0,grid,deltagrid,fm[i][k],fu[i][k],fd[i][k],fph[i][k],fg[i][k],fe[i][k],fb[i][k],fc[i][k],ftau[i][k],k01,talpha);
 			}
 		}
 		for(j=0;j<Nx-1;j++){
-			k02 = RKj0(i,j,Nx,(i+0.5)*dt0,dt0,grid,deltagrid,fm[i][j]+0.5*k01[i][j],fu[i][j]+0.5*k01[i][j+Nx],fd[i][j]+0.5*k01[i][j+2*Nx],fph[i][j]+0.5*k01[i][j+3*Nx],fg[i][j]+0.5*k01[i][j+4*Nx],fe[i][j]+0.5*k01[i][j+5*Nx],fb[i][j]+0.5*k01[i][j+6*Nx],k02,newterm(grid,deltagrid,j,Nx),talpha);
+			k02 = RKj0(i,j,Nx,(i+0.5)*dt0,dt0,grid,deltagrid,fm[i][j]+0.5*k01[i][j],fu[i][j]+0.5*k01[i][j+Nx],fd[i][j]+0.5*k01[i][j+2*Nx],fph[i][j]+0.5*k01[i][j+3*Nx],fg[i][j]+0.5*k01[i][j+4*Nx],fe[i][j]+0.5*k01[i][j+5*Nx],fb[i][j]+0.5*k01[i][j+6*Nx],fc[i][j]+0.5*k01[i][j+7*Nx],ftau[i][j]+0.5*k01[i][j+8*Nx],k02,newterm(grid,deltagrid,j,Nx),talpha);
 			for(k=j+1;k<Nx;k++){
-				k02 = RK0(i,j,k,Nx,(i+0.5)*dt0,dt0,grid,deltagrid,fm[i][k]+0.5*k01[i][k],fu[i][k]+0.5*k01[i][k+Nx],fd[i][k]+0.5*k01[i][k+2*Nx],fph[i][k]+0.5*k01[i][k+3*Nx],fg[i][k]+0.5*k01[i][k+4*Nx],fe[i][k]+0.5*k01[i][k+5*Nx],fb[i][k]+0.5*k01[i][k+6*Nx],k02,talpha);
+				k02 = RK0(i,j,k,Nx,(i+0.5)*dt0,dt0,grid,deltagrid,fm[i][k]+0.5*k01[i][k],fu[i][k]+0.5*k01[i][k+Nx],fd[i][k]+0.5*k01[i][k+2*Nx],fph[i][k]+0.5*k01[i][k+3*Nx],fg[i][k]+0.5*k01[i][k+4*Nx],fe[i][k]+0.5*k01[i][k+5*Nx],fb[i][k]+0.5*k01[i][k+6*Nx],fc[i][k]+0.5*k01[i][k+7*Nx],ftau[i][k]+0.5*k01[i][k+8*Nx],k02,talpha);
 			}
 		}
 		for(j=0;j<Nx-1;j++){
-			k03 = RKj0(i,j,Nx,(i+0.5)*dt0,dt0,grid,deltagrid,fm[i][j]+0.5*k02[i][j],fu[i][j]+0.5*k02[i][j+Nx],fd[i][j]+0.5*k02[i][j+2*Nx],fph[i][j]+0.5*k02[i][j+3*Nx],fg[i][j]+0.5*k02[i][j+4*Nx],fe[i][j]+0.5*k02[i][j+5*Nx],fb[i][j]+0.5*k02[i][j+6*Nx],k03,newterm(grid,deltagrid,j,Nx),talpha);
+			k03 = RKj0(i,j,Nx,(i+0.5)*dt0,dt0,grid,deltagrid,fm[i][j]+0.5*k02[i][j],fu[i][j]+0.5*k02[i][j+Nx],fd[i][j]+0.5*k02[i][j+2*Nx],fph[i][j]+0.5*k02[i][j+3*Nx],fg[i][j]+0.5*k02[i][j+4*Nx],fe[i][j]+0.5*k02[i][j+5*Nx],fb[i][j]+0.5*k02[i][j+6*Nx],fc[i][j]+0.5*k02[i][j+7*Nx],ftau[i][j]+0.5*k02[i][j+8*Nx],k03,newterm(grid,deltagrid,j,Nx),talpha);
 			for(k=j+1;k<Nx;k++){
-				k03 = RK0(i,j,k,Nx,(i+0.5)*dt0,dt0,grid,deltagrid,fm[i][k]+0.5*k02[i][k],fu[i][k]+0.5*k02[i][k+Nx],fd[i][k]+0.5*k02[i][k+2*Nx],fph[i][k]+0.5*k02[i][k+3*Nx],fg[i][k]+0.5*k02[i][k+4*Nx],fe[i][k]+0.5*k02[i][k+5*Nx],fb[i][k]+0.5*k02[i][k+6*Nx],k03,talpha);
+				k03 = RK0(i,j,k,Nx,(i+0.5)*dt0,dt0,grid,deltagrid,fm[i][k]+0.5*k02[i][k],fu[i][k]+0.5*k02[i][k+Nx],fd[i][k]+0.5*k02[i][k+2*Nx],fph[i][k]+0.5*k02[i][k+3*Nx],fg[i][k]+0.5*k02[i][k+4*Nx],fe[i][k]+0.5*k02[i][k+5*Nx],fb[i][k]+0.5*k02[i][k+6*Nx],fc[i][k]+0.5*k02[i][k+7*Nx],ftau[i][k]+0.5*k02[i][k+8*Nx],k03,talpha);
 			}
 		}
 		for(j=0;j<Nx-1;j++){
-			k04 = RKj0(i,j,Nx,(i+1)*dt0,dt0,grid,deltagrid,fm[i][j]+k03[i][j],fu[i][j]+k03[i][j+Nx],fd[i][j]+k03[i][j+2*Nx],fph[i][j]+k03[i][j+3*Nx],fg[i][j]+k03[i][j+4*Nx],fe[i][j]+k03[i][j+5*Nx],fb[i][j]+k03[i][j+6*Nx],k04,newterm(grid,deltagrid,j,Nx),talpha);
+			k04 = RKj0(i,j,Nx,(i+1)*dt0,dt0,grid,deltagrid,fm[i][j]+k03[i][j],fu[i][j]+k03[i][j+Nx],fd[i][j]+k03[i][j+2*Nx],fph[i][j]+k03[i][j+3*Nx],fg[i][j]+k03[i][j+4*Nx],fe[i][j]+k03[i][j+5*Nx],fb[i][j]+k03[i][j+6*Nx],fc[i][j]+k03[i][j+7*Nx],ftau[i][j]+k03[i][j+8*Nx],k04,newterm(grid,deltagrid,j,Nx),talpha);
 			for(k=j+1;k<Nx;k++){
-				k04 = RK0(i,j,k,Nx,(i+1)*dt0,dt0,grid,deltagrid,fm[i][k]+k03[i][k],fu[i][k]+k03[i][k+Nx],fd[i][k]+k03[i][k+2*Nx],fph[i][k]+k03[i][k+3*Nx],fg[i][k]+k03[i][k+4*Nx],fe[i][k]+k03[i][k+5*Nx],fb[i][k]+k03[i][k+6*Nx],k04,talpha);
+				k04 = RK0(i,j,k,Nx,(i+1)*dt0,dt0,grid,deltagrid,fm[i][k]+k03[i][k],fu[i][k]+k03[i][k+Nx],fd[i][k]+k03[i][k+2*Nx],fph[i][k]+k03[i][k+3*Nx],fg[i][k]+k03[i][k+4*Nx],fe[i][k]+k03[i][k+5*Nx],fb[i][k]+k03[i][k+6*Nx],fc[i][k]+k03[i][k+7*Nx],ftau[i][k]+k03[i][k+8*Nx],k04,talpha);
 			}
 		}
 		for(j=0;j<Nx-1;j++){
@@ -430,8 +452,10 @@ int main(){
 			fg[i+1][j] = fg[i][j] + k01[i][j+4*Nx]/6 + k02[i][j+4*Nx]/3 + k03[i][j+4*Nx]/3 + k04[i][j+4*Nx]/6;
 			fe[i+1][j] = fe[i][j] + k01[i][j+5*Nx]/6 + k02[i][j+5*Nx]/3 + k03[i][j+5*Nx]/3 + k04[i][j+5*Nx]/6;
 			fb[i+1][j] = fb[i][j] + k01[i][j+6*Nx]/6 + k02[i][j+6*Nx]/3 + k03[i][j+6*Nx]/3 + k04[i][j+6*Nx]/6;
+			fc[i+1][j] = fc[i][j] + k01[i][j+7*Nx]/6 + k02[i][j+7*Nx]/3 + k03[i][j+7*Nx]/3 + k04[i][j+7*Nx]/6;
+			ftau[i+1][j] = ftau[i][j] + k01[i][j+8*Nx]/6 + k02[i][j+8*Nx]/3 + k03[i][j+8*Nx]/3 + k04[i][j+8*Nx]/6;
 		}
-		fm[i+1][Nx-1] = Lt0(grid,deltagrid,Nx,i+1,fe,fm,fu,fd,fph,fg,fb)/deltagrid[Nx-1];
+		fm[i+1][Nx-1] = Lt0(grid,deltagrid,Nx,i+1,fe,fm,ftau,fu,fc,fd,fph,fg,fb)/deltagrid[Nx-1];
 	}
 	printf("QED+QCD evolution completed!\n");
 	
@@ -441,17 +465,27 @@ int main(){
 		fel[0][i] = fe[Nt0-1][i]/2;
 		felb[0][i] = fel[0][i];
 		fml[0][i] = fm[Nt0-1][i]/2;
+		ftal[0][i] = ftau[Nt0-1][i]/2;
+		ftalb[0][i] = ftal[0][i];
 		fer[0][i] = fel[0][i];
 		ferb[0][i] = fel[0][i];
+		ftar[0][i] = ftal[0][i];
+		ftarb[0][i] = ftal[0][i];
 		fmr[0][i] = fml[0][i];
 		ful[0][i] = fu[Nt0-1][i]/2;
 		fulb[0][i] = ful[0][i];
 		fur[0][i] = ful[0][i];
 		furb[0][i] = ful[0][i];
+		fcl[0][i] = fc[Nt0-1][i]/2;
+		fclb[0][i] = fcl[0][i];
+		fcr[0][i] = fcl[0][i];
+		fcrb[0][i] = fcl[0][i];
 		fdl[0][i] = fd[Nt0-1][i]/2;
 		fdlb[0][i] = fdl[0][i];
 		fdr[0][i] = fdl[0][i];
 		fdrb[0][i] = fdl[0][i];
+		fsl[0][i] = fdl[0][i];
+		fslb[0][i] = fdl[0][i];
 		fbl[0][i] = fb[Nt0-1][i]/2;
 		fblb[0][i] = fbl[0][i];
 		fbr[0][i] = fbl[0][i];
@@ -477,31 +511,31 @@ int main(){
 	for(i=0;i<Nt-1;i++){
 		printf("SM evolution: step %d of %d\n",i+1,Nt-1);
 		for(j=0;j<Nx-1;j++){ 
-			k1 = RKj(i,j,Nx,t0+i*dt,dt,grid,deltagrid,fel[i][j],felb[i][j],fml[i][j],fnue[i][j],fnueb[i][j],fnum[i][j],fer[i][j],ferb[i][j],fmr[i][j],ful[i][j],fulb[i][j],ftl[i][j],ftlb[i][j],fdl[i][j],fdlb[i][j],fbl[i][j],fblb[i][j],fur[i][j],furb[i][j],ftr[i][j],ftrb[i][j],fdr[i][j],fdrb[i][j],fbr[i][j],fbrb[i][j],fh[i][j],fwpl[i][j],fwml[i][j],fzl[i][j],fwpp[i][j],fwpm[i][j],fwmp[i][j],fwmm[i][j],fzp[i][j],fzm[i][j],fphp[i][j],fphm[i][j],fzphp[i][j],fzphm[i][j],fgp[i][j],fgm[i][j],fhzl[i][j],k1,newterm(grid,deltagrid,j,Nx),talpha);
-			k1 = RKjuc(i,j,Nx,t0+i*dt,dt,grid,deltagrid,fel[i][j],felb[i][j],fml[i][j],fnue[i][j],fnueb[i][j],fnum[i][j],fer[i][j],ferb[i][j],fmr[i][j],ful[i][j],fulb[i][j],ftl[i][j],ftlb[i][j],fdl[i][j],fdlb[i][j],fbl[i][j],fblb[i][j],fur[i][j],furb[i][j],ftr[i][j],ftrb[i][j],fdr[i][j],fdrb[i][j],fbr[i][j],fbrb[i][j],fh[i][j],fwpl[i][j],fwml[i][j],fzl[i][j],fwpp[i][j],fwpm[i][j],fwmp[i][j],fwmm[i][j],fzp[i][j],fzm[i][j],fphp[i][j],fphm[i][j],fzphp[i][j],fzphm[i][j],fgp[i][j],fgm[i][j],fhzl[i][j],k1,newterm(grid,deltagrid,j,Nx),talpha);
+			k1 = RKj(i,j,Nx,t0+i*dt,dt,grid,deltagrid,fel[i][j],felb[i][j],fml[i][j],fnue[i][j],fnueb[i][j],fnum[i][j],fer[i][j],ferb[i][j],fmr[i][j],ful[i][j],fulb[i][j],ftl[i][j],ftlb[i][j],fdl[i][j],fdlb[i][j],fbl[i][j],fblb[i][j],fur[i][j],furb[i][j],ftr[i][j],ftrb[i][j],fdr[i][j],fdrb[i][j],fbr[i][j],fbrb[i][j],fh[i][j],fwpl[i][j],fwml[i][j],fzl[i][j],fwpp[i][j],fwpm[i][j],fwmp[i][j],fwmm[i][j],fzp[i][j],fzm[i][j],fphp[i][j],fphm[i][j],fzphp[i][j],fzphm[i][j],fgp[i][j],fgm[i][j],fhzl[i][j],ftal[i][j],ftalb[i][j],ftar[i][j],ftarb[i][j],fnuta[i][j],fnutab[i][j],fcl[i][j],fclb[i][j],fcr[i][j],fcrb[i][j],fsl[i][j],fslb[i][j],k1,newterm(grid,deltagrid,j,Nx),talpha);
+			k1 = RKjuc(i,j,Nx,t0+i*dt,dt,grid,deltagrid,fel[i][j],felb[i][j],fml[i][j],fnue[i][j],fnueb[i][j],fnum[i][j],fer[i][j],ferb[i][j],fmr[i][j],ful[i][j],fulb[i][j],ftl[i][j],ftlb[i][j],fdl[i][j],fdlb[i][j],fbl[i][j],fblb[i][j],fur[i][j],furb[i][j],ftr[i][j],ftrb[i][j],fdr[i][j],fdrb[i][j],fbr[i][j],fbrb[i][j],fh[i][j],fwpl[i][j],fwml[i][j],fzl[i][j],fwpp[i][j],fwpm[i][j],fwmp[i][j],fwmm[i][j],fzp[i][j],fzm[i][j],fphp[i][j],fphm[i][j],fzphp[i][j],fzphm[i][j],fgp[i][j],fgm[i][j],fhzl[i][j],ftal[i][j],ftalb[i][j],ftar[i][j],ftarb[i][j],fnuta[i][j],fnutab[i][j],fcl[i][j],fclb[i][j],fcr[i][j],fcrb[i][j],fsl[i][j],fslb[i][j],k1,newterm(grid,deltagrid,j,Nx),talpha);
 			for(k=j+1;k<Nx;k++){
-				k1 = RK(i,j,k,Nx,t0+i*dt,dt,grid,deltagrid,fel[i][k],felb[i][k],fml[i][k],fnue[i][k],fnueb[i][k],fnum[i][k],fer[i][k],ferb[i][k],fmr[i][k],ful[i][k],fulb[i][k],ftl[i][k],ftlb[i][k],fdl[i][k],fdlb[i][k],fbl[i][k],fblb[i][k],fur[i][k],furb[i][k],ftr[i][k],ftrb[i][k],fdr[i][k],fdrb[i][k],fbr[i][k],fbrb[i][k],fh[i][k],fwpl[i][k],fwml[i][k],fzl[i][k],fwpp[i][k],fwpm[i][k],fwmp[i][k],fwmm[i][k],fzp[i][k],fzm[i][k],fphp[i][k],fphm[i][k],fzphp[i][k],fzphm[i][k],fgp[i][k],fgm[i][k],fhzl[i][k],k1,talpha);
+				k1 = RK(i,j,k,Nx,t0+i*dt,dt,grid,deltagrid,fel[i][k],felb[i][k],fml[i][k],fnue[i][k],fnueb[i][k],fnum[i][k],fer[i][k],ferb[i][k],fmr[i][k],ful[i][k],fulb[i][k],ftl[i][k],ftlb[i][k],fdl[i][k],fdlb[i][k],fbl[i][k],fblb[i][k],fur[i][k],furb[i][k],ftr[i][k],ftrb[i][k],fdr[i][k],fdrb[i][k],fbr[i][k],fbrb[i][k],fh[i][k],fwpl[i][k],fwml[i][k],fzl[i][k],fwpp[i][k],fwpm[i][k],fwmp[i][k],fwmm[i][k],fzp[i][k],fzm[i][k],fphp[i][k],fphm[i][k],fzphp[i][k],fzphm[i][k],fgp[i][k],fgm[i][k],fhzl[i][k],ftal[i][k],ftalb[i][k],ftar[i][k],ftarb[i][k],fnuta[i][k],fnutab[i][k],fcl[i][k],fclb[i][k],fcr[i][k],fcrb[i][k],fsl[i][k],fslb[i][k],k1,talpha);
 			}
 		}
 		for(j=0;j<Nx-1;j++){
-			k2 = RKj(i,j,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][j]+0.5*k1[i][j],felb[i][j]+0.5*k1[i][j+Nx],fml[i][j]+0.5*k1[i][j+2*Nx],fnue[i][j]+0.5*k1[i][j+3*Nx],fnueb[i][j]+0.5*k1[i][j+4*Nx],fnum[i][j]+0.5*k1[i][j+5*Nx],fer[i][j]+0.5*k1[i][j+6*Nx],ferb[i][j]+0.5*k1[i][j+7*Nx],fmr[i][j]+0.5*k1[i][j+8*Nx],ful[i][j]+0.5*k1[i][j+9*Nx],fulb[i][j]+0.5*k1[i][j+10*Nx],ftl[i][j]+0.5*k1[i][j+11*Nx],ftlb[i][j]+0.5*k1[i][j+12*Nx],fdl[i][j]+0.5*k1[i][j+13*Nx],fdlb[i][j]+0.5*k1[i][j+14*Nx],fbl[i][j]+0.5*k1[i][j+15*Nx],fblb[i][j]+0.5*k1[i][j+16*Nx],fur[i][j]+0.5*k1[i][j+17*Nx],furb[i][j]+0.5*k1[i][j+18*Nx],ftr[i][j]+0.5*k1[i][j+19*Nx],ftrb[i][j]+0.5*k1[i][j+20*Nx],fdr[i][j]+0.5*k1[i][j+21*Nx],fdrb[i][j]+0.5*k1[i][j+22*Nx],fbr[i][j]+0.5*k1[i][j+23*Nx],fbrb[i][j]+0.5*k1[i][j+24*Nx],fh[i][j]+0.5*k1[i][j+25*Nx],fwpl[i][j]+0.5*k1[i][j+26*Nx],fwml[i][j]+0.5*k1[i][j+27*Nx],fzl[i][j]+0.5*k1[i][j+28*Nx],fwpp[i][j]+0.5*k1[i][j+29*Nx],fwpm[i][j]+0.5*k1[i][j+30*Nx],fwmp[i][j]+0.5*k1[i][j+31*Nx],fwmm[i][j]+0.5*k1[i][j+32*Nx],fzp[i][j]+0.5*k1[i][j+33*Nx],fzm[i][j]+0.5*k1[i][j+34*Nx],fphp[i][j]+0.5*k1[i][j+35*Nx],fphm[i][j]+0.5*k1[i][j+36*Nx],fzphp[i][j]+0.5*k1[i][j+37*Nx],fzphm[i][j]+0.5*k1[i][j+38*Nx],fgp[i][j]+0.5*k1[i][j+39*Nx],fgm[i][j]+0.5*k1[i][j+40*Nx],fhzl[i][j]+0.5*k1[i][j+41*Nx],k2,newterm(grid,deltagrid,j,Nx),talpha);
-			k2 = RKjuc(i,j,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][j]+0.5*k1[i][j],felb[i][j]+0.5*k1[i][j+Nx],fml[i][j]+0.5*k1[i][j+2*Nx],fnue[i][j]+0.5*k1[i][j+3*Nx],fnueb[i][j]+0.5*k1[i][j+4*Nx],fnum[i][j]+0.5*k1[i][j+5*Nx],fer[i][j]+0.5*k1[i][j+6*Nx],ferb[i][j]+0.5*k1[i][j+7*Nx],fmr[i][j]+0.5*k1[i][j+8*Nx],ful[i][j]+0.5*k1[i][j+9*Nx],fulb[i][j]+0.5*k1[i][j+10*Nx],ftl[i][j]+0.5*k1[i][j+11*Nx],ftlb[i][j]+0.5*k1[i][j+12*Nx],fdl[i][j]+0.5*k1[i][j+13*Nx],fdlb[i][j]+0.5*k1[i][j+14*Nx],fbl[i][j]+0.5*k1[i][j+15*Nx],fblb[i][j]+0.5*k1[i][j+16*Nx],fur[i][j]+0.5*k1[i][j+17*Nx],furb[i][j]+0.5*k1[i][j+18*Nx],ftr[i][j]+0.5*k1[i][j+19*Nx],ftrb[i][j]+0.5*k1[i][j+20*Nx],fdr[i][j]+0.5*k1[i][j+21*Nx],fdrb[i][j]+0.5*k1[i][j+22*Nx],fbr[i][j]+0.5*k1[i][j+23*Nx],fbrb[i][j]+0.5*k1[i][j+24*Nx],fh[i][j]+0.5*k1[i][j+25*Nx],fwpl[i][j]+0.5*k1[i][j+26*Nx],fwml[i][j]+0.5*k1[i][j+27*Nx],fzl[i][j]+0.5*k1[i][j+28*Nx],fwpp[i][j]+0.5*k1[i][j+29*Nx],fwpm[i][j]+0.5*k1[i][j+30*Nx],fwmp[i][j]+0.5*k1[i][j+31*Nx],fwmm[i][j]+0.5*k1[i][j+32*Nx],fzp[i][j]+0.5*k1[i][j+33*Nx],fzm[i][j]+0.5*k1[i][j+34*Nx],fphp[i][j]+0.5*k1[i][j+35*Nx],fphm[i][j]+0.5*k1[i][j+36*Nx],fzphp[i][j]+0.5*k1[i][j+37*Nx],fzphm[i][j]+0.5*k1[i][j+38*Nx],fgp[i][j]+0.5*k1[i][j+39*Nx],fgm[i][j]+0.5*k1[i][j+40*Nx],fhzl[i][j]+0.5*k1[i][j+41*Nx],k2,newterm(grid,deltagrid,j,Nx),talpha);
+			k2 = RKj(i,j,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][j]+0.5*k1[i][j],felb[i][j]+0.5*k1[i][j+Nx],fml[i][j]+0.5*k1[i][j+2*Nx],fnue[i][j]+0.5*k1[i][j+3*Nx],fnueb[i][j]+0.5*k1[i][j+4*Nx],fnum[i][j]+0.5*k1[i][j+5*Nx],fer[i][j]+0.5*k1[i][j+6*Nx],ferb[i][j]+0.5*k1[i][j+7*Nx],fmr[i][j]+0.5*k1[i][j+8*Nx],ful[i][j]+0.5*k1[i][j+9*Nx],fulb[i][j]+0.5*k1[i][j+10*Nx],ftl[i][j]+0.5*k1[i][j+11*Nx],ftlb[i][j]+0.5*k1[i][j+12*Nx],fdl[i][j]+0.5*k1[i][j+13*Nx],fdlb[i][j]+0.5*k1[i][j+14*Nx],fbl[i][j]+0.5*k1[i][j+15*Nx],fblb[i][j]+0.5*k1[i][j+16*Nx],fur[i][j]+0.5*k1[i][j+17*Nx],furb[i][j]+0.5*k1[i][j+18*Nx],ftr[i][j]+0.5*k1[i][j+19*Nx],ftrb[i][j]+0.5*k1[i][j+20*Nx],fdr[i][j]+0.5*k1[i][j+21*Nx],fdrb[i][j]+0.5*k1[i][j+22*Nx],fbr[i][j]+0.5*k1[i][j+23*Nx],fbrb[i][j]+0.5*k1[i][j+24*Nx],fh[i][j]+0.5*k1[i][j+25*Nx],fwpl[i][j]+0.5*k1[i][j+26*Nx],fwml[i][j]+0.5*k1[i][j+27*Nx],fzl[i][j]+0.5*k1[i][j+28*Nx],fwpp[i][j]+0.5*k1[i][j+29*Nx],fwpm[i][j]+0.5*k1[i][j+30*Nx],fwmp[i][j]+0.5*k1[i][j+31*Nx],fwmm[i][j]+0.5*k1[i][j+32*Nx],fzp[i][j]+0.5*k1[i][j+33*Nx],fzm[i][j]+0.5*k1[i][j+34*Nx],fphp[i][j]+0.5*k1[i][j+35*Nx],fphm[i][j]+0.5*k1[i][j+36*Nx],fzphp[i][j]+0.5*k1[i][j+37*Nx],fzphm[i][j]+0.5*k1[i][j+38*Nx],fgp[i][j]+0.5*k1[i][j+39*Nx],fgm[i][j]+0.5*k1[i][j+40*Nx],fhzl[i][j]+0.5*k1[i][j+41*Nx],ftal[i][j]+0.5*k1[i][j+42*Nx],ftalb[i][j]+0.5*k1[i][j+43*Nx],ftar[i][j]+0.5*k1[i][j+44*Nx],ftarb[i][j]+0.5*k1[i][j+45*Nx],fnuta[i][j]+0.5*k1[i][j+46*Nx],fnutab[i][j]+0.5*k1[i][j+47*Nx],fcl[i][j]+0.5*k1[i][j+48*Nx],fclb[i][j]+0.5*k1[i][j+49*Nx],fcr[i][j]+0.5*k1[i][j+50*Nx],fcrb[i][j]+0.5*k1[i][j+51*Nx],fsl[i][j]+0.5*k1[i][j+52*Nx],fslb[i][j]+0.5*k1[i][j+53*Nx],k2,newterm(grid,deltagrid,j,Nx),talpha);
+			k2 = RKjuc(i,j,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][j]+0.5*k1[i][j],felb[i][j]+0.5*k1[i][j+Nx],fml[i][j]+0.5*k1[i][j+2*Nx],fnue[i][j]+0.5*k1[i][j+3*Nx],fnueb[i][j]+0.5*k1[i][j+4*Nx],fnum[i][j]+0.5*k1[i][j+5*Nx],fer[i][j]+0.5*k1[i][j+6*Nx],ferb[i][j]+0.5*k1[i][j+7*Nx],fmr[i][j]+0.5*k1[i][j+8*Nx],ful[i][j]+0.5*k1[i][j+9*Nx],fulb[i][j]+0.5*k1[i][j+10*Nx],ftl[i][j]+0.5*k1[i][j+11*Nx],ftlb[i][j]+0.5*k1[i][j+12*Nx],fdl[i][j]+0.5*k1[i][j+13*Nx],fdlb[i][j]+0.5*k1[i][j+14*Nx],fbl[i][j]+0.5*k1[i][j+15*Nx],fblb[i][j]+0.5*k1[i][j+16*Nx],fur[i][j]+0.5*k1[i][j+17*Nx],furb[i][j]+0.5*k1[i][j+18*Nx],ftr[i][j]+0.5*k1[i][j+19*Nx],ftrb[i][j]+0.5*k1[i][j+20*Nx],fdr[i][j]+0.5*k1[i][j+21*Nx],fdrb[i][j]+0.5*k1[i][j+22*Nx],fbr[i][j]+0.5*k1[i][j+23*Nx],fbrb[i][j]+0.5*k1[i][j+24*Nx],fh[i][j]+0.5*k1[i][j+25*Nx],fwpl[i][j]+0.5*k1[i][j+26*Nx],fwml[i][j]+0.5*k1[i][j+27*Nx],fzl[i][j]+0.5*k1[i][j+28*Nx],fwpp[i][j]+0.5*k1[i][j+29*Nx],fwpm[i][j]+0.5*k1[i][j+30*Nx],fwmp[i][j]+0.5*k1[i][j+31*Nx],fwmm[i][j]+0.5*k1[i][j+32*Nx],fzp[i][j]+0.5*k1[i][j+33*Nx],fzm[i][j]+0.5*k1[i][j+34*Nx],fphp[i][j]+0.5*k1[i][j+35*Nx],fphm[i][j]+0.5*k1[i][j+36*Nx],fzphp[i][j]+0.5*k1[i][j+37*Nx],fzphm[i][j]+0.5*k1[i][j+38*Nx],fgp[i][j]+0.5*k1[i][j+39*Nx],fgm[i][j]+0.5*k1[i][j+40*Nx],fhzl[i][j]+0.5*k1[i][j+41*Nx],ftal[i][j]+0.5*k1[i][j+42*Nx],ftalb[i][j]+0.5*k1[i][j+43*Nx],ftar[i][j]+0.5*k1[i][j+44*Nx],ftarb[i][j]+0.5*k1[i][j+45*Nx],fnuta[i][j]+0.5*k1[i][j+46*Nx],fnutab[i][j]+0.5*k1[i][j+47*Nx],fcl[i][j]+0.5*k1[i][j+48*Nx],fclb[i][j]+0.5*k1[i][j+49*Nx],fcr[i][j]+0.5*k1[i][j+50*Nx],fcrb[i][j]+0.5*k1[i][j+51*Nx],fsl[i][j]+0.5*k1[i][j+52*Nx],fslb[i][j]+0.5*k1[i][j+53*Nx],k2,newterm(grid,deltagrid,j,Nx),talpha);
 			for(k=j+1;k<Nx;k++){
-				k2 = RK(i,j,k,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][k]+0.5*k1[i][k],felb[i][k]+0.5*k1[i][k+Nx],fml[i][k]+0.5*k1[i][k+2*Nx],fnue[i][k]+0.5*k1[i][k+3*Nx],fnueb[i][k]+0.5*k1[i][k+4*Nx],fnum[i][k]+0.5*k1[i][k+5*Nx],fer[i][k]+0.5*k1[i][k+6*Nx],ferb[i][k]+0.5*k1[i][k+7*Nx],fmr[i][k]+0.5*k1[i][k+8*Nx],ful[i][k]+0.5*k1[i][k+9*Nx],fulb[i][k]+0.5*k1[i][k+10*Nx],ftl[i][k]+0.5*k1[i][k+11*Nx],ftlb[i][k]+0.5*k1[i][k+12*Nx],fdl[i][k]+0.5*k1[i][k+13*Nx],fdlb[i][k]+0.5*k1[i][k+14*Nx],fbl[i][k]+0.5*k1[i][k+15*Nx],fblb[i][k]+0.5*k1[i][k+16*Nx],fur[i][k]+0.5*k1[i][k+17*Nx],furb[i][k]+0.5*k1[i][k+18*Nx],ftr[i][k]+0.5*k1[i][k+19*Nx],ftrb[i][k]+0.5*k1[i][k+20*Nx],fdr[i][k]+0.5*k1[i][k+21*Nx],fdrb[i][k]+0.5*k1[i][k+22*Nx],fbr[i][k]+0.5*k1[i][k+23*Nx],fbrb[i][k]+0.5*k1[i][k+24*Nx],fh[i][k]+0.5*k1[i][k+25*Nx],fwpl[i][k]+0.5*k1[i][k+26*Nx],fwml[i][k]+0.5*k1[i][k+27*Nx],fzl[i][k]+0.5*k1[i][k+28*Nx],fwpp[i][k]+0.5*k1[i][k+29*Nx],fwpm[i][k]+0.5*k1[i][k+30*Nx],fwmp[i][k]+0.5*k1[i][k+31*Nx],fwmm[i][k]+0.5*k1[i][k+32*Nx],fzp[i][k]+0.5*k1[i][k+33*Nx],fzm[i][k]+0.5*k1[i][k+34*Nx],fphp[i][k]+0.5*k1[i][k+35*Nx],fphm[i][k]+0.5*k1[i][k+36*Nx],fzphp[i][k]+0.5*k1[i][k+37*Nx],fzphm[i][k]+0.5*k1[i][k+38*Nx],fgp[i][k]+0.5*k1[i][k+39*Nx],fgm[i][k]+0.5*k1[i][k+40*Nx],fhzl[i][k]+0.5*k1[i][k+41*Nx],k2,talpha);
+				k2 = RK(i,j,k,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][k]+0.5*k1[i][k],felb[i][k]+0.5*k1[i][k+Nx],fml[i][k]+0.5*k1[i][k+2*Nx],fnue[i][k]+0.5*k1[i][k+3*Nx],fnueb[i][k]+0.5*k1[i][k+4*Nx],fnum[i][k]+0.5*k1[i][k+5*Nx],fer[i][k]+0.5*k1[i][k+6*Nx],ferb[i][k]+0.5*k1[i][k+7*Nx],fmr[i][k]+0.5*k1[i][k+8*Nx],ful[i][k]+0.5*k1[i][k+9*Nx],fulb[i][k]+0.5*k1[i][k+10*Nx],ftl[i][k]+0.5*k1[i][k+11*Nx],ftlb[i][k]+0.5*k1[i][k+12*Nx],fdl[i][k]+0.5*k1[i][k+13*Nx],fdlb[i][k]+0.5*k1[i][k+14*Nx],fbl[i][k]+0.5*k1[i][k+15*Nx],fblb[i][k]+0.5*k1[i][k+16*Nx],fur[i][k]+0.5*k1[i][k+17*Nx],furb[i][k]+0.5*k1[i][k+18*Nx],ftr[i][k]+0.5*k1[i][k+19*Nx],ftrb[i][k]+0.5*k1[i][k+20*Nx],fdr[i][k]+0.5*k1[i][k+21*Nx],fdrb[i][k]+0.5*k1[i][k+22*Nx],fbr[i][k]+0.5*k1[i][k+23*Nx],fbrb[i][k]+0.5*k1[i][k+24*Nx],fh[i][k]+0.5*k1[i][k+25*Nx],fwpl[i][k]+0.5*k1[i][k+26*Nx],fwml[i][k]+0.5*k1[i][k+27*Nx],fzl[i][k]+0.5*k1[i][k+28*Nx],fwpp[i][k]+0.5*k1[i][k+29*Nx],fwpm[i][k]+0.5*k1[i][k+30*Nx],fwmp[i][k]+0.5*k1[i][k+31*Nx],fwmm[i][k]+0.5*k1[i][k+32*Nx],fzp[i][k]+0.5*k1[i][k+33*Nx],fzm[i][k]+0.5*k1[i][k+34*Nx],fphp[i][k]+0.5*k1[i][k+35*Nx],fphm[i][k]+0.5*k1[i][k+36*Nx],fzphp[i][k]+0.5*k1[i][k+37*Nx],fzphm[i][k]+0.5*k1[i][k+38*Nx],fgp[i][k]+0.5*k1[i][k+39*Nx],fgm[i][k]+0.5*k1[i][k+40*Nx],fhzl[i][k]+0.5*k1[i][k+41*Nx],ftal[i][k]+0.5*k1[i][k+42*Nx],ftalb[i][k]+0.5*k1[i][k+43*Nx],ftar[i][k]+0.5*k1[i][k+44*Nx],ftarb[i][k]+0.5*k1[i][k+45*Nx],fnuta[i][k]+0.5*k1[i][k+46*Nx],fnutab[i][k]+0.5*k1[i][k+47*Nx],fcl[i][k]+0.5*k1[i][k+48*Nx],fclb[i][k]+0.5*k1[i][k+49*Nx],fcr[i][k]+0.5*k1[i][k+50*Nx],fcrb[i][k]+0.5*k1[i][k+51*Nx],fsl[i][k]+0.5*k1[i][k+52*Nx],fslb[i][k]+0.5*k1[i][k+53*Nx],k2,talpha);
 			}
 		}
 		for(j=0;j<Nx-1;j++){
-			k3 = RKj(i,j,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][j]+0.5*k2[i][j],felb[i][j]+0.5*k2[i][j+Nx],fml[i][j]+0.5*k2[i][j+2*Nx],fnue[i][j]+0.5*k2[i][j+3*Nx],fnueb[i][j]+0.5*k2[i][j+4*Nx],fnum[i][j]+0.5*k2[i][j+5*Nx],fer[i][j]+0.5*k2[i][j+6*Nx],ferb[i][j]+0.5*k2[i][j+7*Nx],fmr[i][j]+0.5*k2[i][j+8*Nx],ful[i][j]+0.5*k2[i][j+9*Nx],fulb[i][j]+0.5*k2[i][j+10*Nx],ftl[i][j]+0.5*k2[i][j+11*Nx],ftlb[i][j]+0.5*k2[i][j+12*Nx],fdl[i][j]+0.5*k2[i][j+13*Nx],fdlb[i][j]+0.5*k2[i][j+14*Nx],fbl[i][j]+0.5*k2[i][j+15*Nx],fblb[i][j]+0.5*k2[i][j+16*Nx],fur[i][j]+0.5*k2[i][j+17*Nx],furb[i][j]+0.5*k2[i][j+18*Nx],ftr[i][j]+0.5*k2[i][j+19*Nx],ftrb[i][j]+0.5*k2[i][j+20*Nx],fdr[i][j]+0.5*k2[i][j+21*Nx],fdrb[i][j]+0.5*k2[i][j+22*Nx],fbr[i][j]+0.5*k2[i][j+23*Nx],fbrb[i][j]+0.5*k2[i][j+24*Nx],fh[i][j]+0.5*k2[i][j+25*Nx],fwpl[i][j]+0.5*k2[i][j+26*Nx],fwml[i][j]+0.5*k2[i][j+27*Nx],fzl[i][j]+0.5*k2[i][j+28*Nx],fwpp[i][j]+0.5*k2[i][j+29*Nx],fwpm[i][j]+0.5*k2[i][j+30*Nx],fwmp[i][j]+0.5*k2[i][j+31*Nx],fwmm[i][j]+0.5*k2[i][j+32*Nx],fzp[i][j]+0.5*k2[i][j+33*Nx],fzm[i][j]+0.5*k2[i][j+34*Nx],fphp[i][j]+0.5*k2[i][j+35*Nx],fphm[i][j]+0.5*k2[i][j+36*Nx],fzphp[i][j]+0.5*k2[i][j+37*Nx],fzphm[i][j]+0.5*k2[i][j+38*Nx],fgp[i][j]+0.5*k2[i][j+39*Nx],fgm[i][j]+0.5*k2[i][j+40*Nx],fhzl[i][j]+0.5*k2[i][j+41*Nx],k3,newterm(grid,deltagrid,j,Nx),talpha);
-			k3 = RKjuc(i,j,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][j]+0.5*k2[i][j],felb[i][j]+0.5*k2[i][j+Nx],fml[i][j]+0.5*k2[i][j+2*Nx],fnue[i][j]+0.5*k2[i][j+3*Nx],fnueb[i][j]+0.5*k2[i][j+4*Nx],fnum[i][j]+0.5*k2[i][j+5*Nx],fer[i][j]+0.5*k2[i][j+6*Nx],ferb[i][j]+0.5*k2[i][j+7*Nx],fmr[i][j]+0.5*k2[i][j+8*Nx],ful[i][j]+0.5*k2[i][j+9*Nx],fulb[i][j]+0.5*k2[i][j+10*Nx],ftl[i][j]+0.5*k2[i][j+11*Nx],ftlb[i][j]+0.5*k2[i][j+12*Nx],fdl[i][j]+0.5*k2[i][j+13*Nx],fdlb[i][j]+0.5*k2[i][j+14*Nx],fbl[i][j]+0.5*k2[i][j+15*Nx],fblb[i][j]+0.5*k2[i][j+16*Nx],fur[i][j]+0.5*k2[i][j+17*Nx],furb[i][j]+0.5*k2[i][j+18*Nx],ftr[i][j]+0.5*k2[i][j+19*Nx],ftrb[i][j]+0.5*k2[i][j+20*Nx],fdr[i][j]+0.5*k2[i][j+21*Nx],fdrb[i][j]+0.5*k2[i][j+22*Nx],fbr[i][j]+0.5*k2[i][j+23*Nx],fbrb[i][j]+0.5*k2[i][j+24*Nx],fh[i][j]+0.5*k2[i][j+25*Nx],fwpl[i][j]+0.5*k2[i][j+26*Nx],fwml[i][j]+0.5*k2[i][j+27*Nx],fzl[i][j]+0.5*k2[i][j+28*Nx],fwpp[i][j]+0.5*k2[i][j+29*Nx],fwpm[i][j]+0.5*k2[i][j+30*Nx],fwmp[i][j]+0.5*k2[i][j+31*Nx],fwmm[i][j]+0.5*k2[i][j+32*Nx],fzp[i][j]+0.5*k2[i][j+33*Nx],fzm[i][j]+0.5*k2[i][j+34*Nx],fphp[i][j]+0.5*k2[i][j+35*Nx],fphm[i][j]+0.5*k2[i][j+36*Nx],fzphp[i][j]+0.5*k2[i][j+37*Nx],fzphm[i][j]+0.5*k2[i][j+38*Nx],fgp[i][j]+0.5*k2[i][j+39*Nx],fgm[i][j]+0.5*k2[i][j+40*Nx],fhzl[i][j]+0.5*k2[i][j+41*Nx],k3,newterm(grid,deltagrid,j,Nx),talpha);
+			k3 = RKj(i,j,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][j]+0.5*k2[i][j],felb[i][j]+0.5*k2[i][j+Nx],fml[i][j]+0.5*k2[i][j+2*Nx],fnue[i][j]+0.5*k2[i][j+3*Nx],fnueb[i][j]+0.5*k2[i][j+4*Nx],fnum[i][j]+0.5*k2[i][j+5*Nx],fer[i][j]+0.5*k2[i][j+6*Nx],ferb[i][j]+0.5*k2[i][j+7*Nx],fmr[i][j]+0.5*k2[i][j+8*Nx],ful[i][j]+0.5*k2[i][j+9*Nx],fulb[i][j]+0.5*k2[i][j+10*Nx],ftl[i][j]+0.5*k2[i][j+11*Nx],ftlb[i][j]+0.5*k2[i][j+12*Nx],fdl[i][j]+0.5*k2[i][j+13*Nx],fdlb[i][j]+0.5*k2[i][j+14*Nx],fbl[i][j]+0.5*k2[i][j+15*Nx],fblb[i][j]+0.5*k2[i][j+16*Nx],fur[i][j]+0.5*k2[i][j+17*Nx],furb[i][j]+0.5*k2[i][j+18*Nx],ftr[i][j]+0.5*k2[i][j+19*Nx],ftrb[i][j]+0.5*k2[i][j+20*Nx],fdr[i][j]+0.5*k2[i][j+21*Nx],fdrb[i][j]+0.5*k2[i][j+22*Nx],fbr[i][j]+0.5*k2[i][j+23*Nx],fbrb[i][j]+0.5*k2[i][j+24*Nx],fh[i][j]+0.5*k2[i][j+25*Nx],fwpl[i][j]+0.5*k2[i][j+26*Nx],fwml[i][j]+0.5*k2[i][j+27*Nx],fzl[i][j]+0.5*k2[i][j+28*Nx],fwpp[i][j]+0.5*k2[i][j+29*Nx],fwpm[i][j]+0.5*k2[i][j+30*Nx],fwmp[i][j]+0.5*k2[i][j+31*Nx],fwmm[i][j]+0.5*k2[i][j+32*Nx],fzp[i][j]+0.5*k2[i][j+33*Nx],fzm[i][j]+0.5*k2[i][j+34*Nx],fphp[i][j]+0.5*k2[i][j+35*Nx],fphm[i][j]+0.5*k2[i][j+36*Nx],fzphp[i][j]+0.5*k2[i][j+37*Nx],fzphm[i][j]+0.5*k2[i][j+38*Nx],fgp[i][j]+0.5*k2[i][j+39*Nx],fgm[i][j]+0.5*k2[i][j+40*Nx],fhzl[i][j]+0.5*k2[i][j+41*Nx],ftal[i][j]+0.5*k2[i][j+42*Nx],ftalb[i][j]+0.5*k2[i][j+43*Nx],ftar[i][j]+0.5*k2[i][j+44*Nx],ftarb[i][j]+0.5*k2[i][j+45*Nx],fnuta[i][j]+0.5*k2[i][j+46*Nx],fnutab[i][j]+0.5*k2[i][j+47*Nx],fcl[i][j]+0.5*k2[i][j+48*Nx],fclb[i][j]+0.5*k2[i][j+49*Nx],fcr[i][j]+0.5*k2[i][j+50*Nx],fcrb[i][j]+0.5*k2[i][j+51*Nx],fsl[i][j]+0.5*k2[i][j+52*Nx],fslb[i][j]+0.5*k2[i][j+53*Nx],k3,newterm(grid,deltagrid,j,Nx),talpha);
+			k3 = RKjuc(i,j,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][j]+0.5*k2[i][j],felb[i][j]+0.5*k2[i][j+Nx],fml[i][j]+0.5*k2[i][j+2*Nx],fnue[i][j]+0.5*k2[i][j+3*Nx],fnueb[i][j]+0.5*k2[i][j+4*Nx],fnum[i][j]+0.5*k2[i][j+5*Nx],fer[i][j]+0.5*k2[i][j+6*Nx],ferb[i][j]+0.5*k2[i][j+7*Nx],fmr[i][j]+0.5*k2[i][j+8*Nx],ful[i][j]+0.5*k2[i][j+9*Nx],fulb[i][j]+0.5*k2[i][j+10*Nx],ftl[i][j]+0.5*k2[i][j+11*Nx],ftlb[i][j]+0.5*k2[i][j+12*Nx],fdl[i][j]+0.5*k2[i][j+13*Nx],fdlb[i][j]+0.5*k2[i][j+14*Nx],fbl[i][j]+0.5*k2[i][j+15*Nx],fblb[i][j]+0.5*k2[i][j+16*Nx],fur[i][j]+0.5*k2[i][j+17*Nx],furb[i][j]+0.5*k2[i][j+18*Nx],ftr[i][j]+0.5*k2[i][j+19*Nx],ftrb[i][j]+0.5*k2[i][j+20*Nx],fdr[i][j]+0.5*k2[i][j+21*Nx],fdrb[i][j]+0.5*k2[i][j+22*Nx],fbr[i][j]+0.5*k2[i][j+23*Nx],fbrb[i][j]+0.5*k2[i][j+24*Nx],fh[i][j]+0.5*k2[i][j+25*Nx],fwpl[i][j]+0.5*k2[i][j+26*Nx],fwml[i][j]+0.5*k2[i][j+27*Nx],fzl[i][j]+0.5*k2[i][j+28*Nx],fwpp[i][j]+0.5*k2[i][j+29*Nx],fwpm[i][j]+0.5*k2[i][j+30*Nx],fwmp[i][j]+0.5*k2[i][j+31*Nx],fwmm[i][j]+0.5*k2[i][j+32*Nx],fzp[i][j]+0.5*k2[i][j+33*Nx],fzm[i][j]+0.5*k2[i][j+34*Nx],fphp[i][j]+0.5*k2[i][j+35*Nx],fphm[i][j]+0.5*k2[i][j+36*Nx],fzphp[i][j]+0.5*k2[i][j+37*Nx],fzphm[i][j]+0.5*k2[i][j+38*Nx],fgp[i][j]+0.5*k2[i][j+39*Nx],fgm[i][j]+0.5*k2[i][j+40*Nx],fhzl[i][j]+0.5*k2[i][j+41*Nx],ftal[i][j]+0.5*k2[i][j+42*Nx],ftalb[i][j]+0.5*k2[i][j+43*Nx],ftar[i][j]+0.5*k2[i][j+44*Nx],ftarb[i][j]+0.5*k2[i][j+45*Nx],fnuta[i][j]+0.5*k2[i][j+46*Nx],fnutab[i][j]+0.5*k2[i][j+47*Nx],fcl[i][j]+0.5*k2[i][j+48*Nx],fclb[i][j]+0.5*k2[i][j+49*Nx],fcr[i][j]+0.5*k2[i][j+50*Nx],fcrb[i][j]+0.5*k2[i][j+51*Nx],fsl[i][j]+0.5*k2[i][j+52*Nx],fslb[i][j]+0.5*k2[i][j+53*Nx],k3,newterm(grid,deltagrid,j,Nx),talpha);
 			for(k=j+1;k<Nx;k++){
-				k3 = RK(i,j,k,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][k]+0.5*k2[i][k],felb[i][k]+0.5*k2[i][k+Nx],fml[i][k]+0.5*k2[i][k+2*Nx],fnue[i][k]+0.5*k2[i][k+3*Nx],fnueb[i][k]+0.5*k2[i][k+4*Nx],fnum[i][k]+0.5*k2[i][k+5*Nx],fer[i][k]+0.5*k2[i][k+6*Nx],ferb[i][k]+0.5*k2[i][k+7*Nx],fmr[i][k]+0.5*k2[i][k+8*Nx],ful[i][k]+0.5*k2[i][k+9*Nx],fulb[i][k]+0.5*k2[i][k+10*Nx],ftl[i][k]+0.5*k2[i][k+11*Nx],ftlb[i][k]+0.5*k2[i][k+12*Nx],fdl[i][k]+0.5*k2[i][k+13*Nx],fdlb[i][k]+0.5*k2[i][k+14*Nx],fbl[i][k]+0.5*k2[i][k+15*Nx],fblb[i][k]+0.5*k2[i][k+16*Nx],fur[i][k]+0.5*k2[i][k+17*Nx],furb[i][k]+0.5*k2[i][k+18*Nx],ftr[i][k]+0.5*k2[i][k+19*Nx],ftrb[i][k]+0.5*k2[i][k+20*Nx],fdr[i][k]+0.5*k2[i][k+21*Nx],fdrb[i][k]+0.5*k2[i][k+22*Nx],fbr[i][k]+0.5*k2[i][k+23*Nx],fbrb[i][k]+0.5*k2[i][k+24*Nx],fh[i][k]+0.5*k2[i][k+25*Nx],fwpl[i][k]+0.5*k2[i][k+26*Nx],fwml[i][k]+0.5*k2[i][k+27*Nx],fzl[i][k]+0.5*k2[i][k+28*Nx],fwpp[i][k]+0.5*k2[i][k+29*Nx],fwpm[i][k]+0.5*k2[i][k+30*Nx],fwmp[i][k]+0.5*k2[i][k+31*Nx],fwmm[i][k]+0.5*k2[i][k+32*Nx],fzp[i][k]+0.5*k2[i][k+33*Nx],fzm[i][k]+0.5*k2[i][k+34*Nx],fphp[i][k]+0.5*k2[i][k+35*Nx],fphm[i][k]+0.5*k2[i][k+36*Nx],fzphp[i][k]+0.5*k2[i][k+37*Nx],fzphm[i][k]+0.5*k2[i][k+38*Nx],fgp[i][k]+0.5*k2[i][k+39*Nx],fgm[i][k]+0.5*k2[i][k+40*Nx],fhzl[i][k]+0.5*k2[i][k+41*Nx],k3,talpha);
+				k3 = RK(i,j,k,Nx,t0+(i+0.5)*dt,dt,grid,deltagrid,fel[i][k]+0.5*k2[i][k],felb[i][k]+0.5*k2[i][k+Nx],fml[i][k]+0.5*k2[i][k+2*Nx],fnue[i][k]+0.5*k2[i][k+3*Nx],fnueb[i][k]+0.5*k2[i][k+4*Nx],fnum[i][k]+0.5*k2[i][k+5*Nx],fer[i][k]+0.5*k2[i][k+6*Nx],ferb[i][k]+0.5*k2[i][k+7*Nx],fmr[i][k]+0.5*k2[i][k+8*Nx],ful[i][k]+0.5*k2[i][k+9*Nx],fulb[i][k]+0.5*k2[i][k+10*Nx],ftl[i][k]+0.5*k2[i][k+11*Nx],ftlb[i][k]+0.5*k2[i][k+12*Nx],fdl[i][k]+0.5*k2[i][k+13*Nx],fdlb[i][k]+0.5*k2[i][k+14*Nx],fbl[i][k]+0.5*k2[i][k+15*Nx],fblb[i][k]+0.5*k2[i][k+16*Nx],fur[i][k]+0.5*k2[i][k+17*Nx],furb[i][k]+0.5*k2[i][k+18*Nx],ftr[i][k]+0.5*k2[i][k+19*Nx],ftrb[i][k]+0.5*k2[i][k+20*Nx],fdr[i][k]+0.5*k2[i][k+21*Nx],fdrb[i][k]+0.5*k2[i][k+22*Nx],fbr[i][k]+0.5*k2[i][k+23*Nx],fbrb[i][k]+0.5*k2[i][k+24*Nx],fh[i][k]+0.5*k2[i][k+25*Nx],fwpl[i][k]+0.5*k2[i][k+26*Nx],fwml[i][k]+0.5*k2[i][k+27*Nx],fzl[i][k]+0.5*k2[i][k+28*Nx],fwpp[i][k]+0.5*k2[i][k+29*Nx],fwpm[i][k]+0.5*k2[i][k+30*Nx],fwmp[i][k]+0.5*k2[i][k+31*Nx],fwmm[i][k]+0.5*k2[i][k+32*Nx],fzp[i][k]+0.5*k2[i][k+33*Nx],fzm[i][k]+0.5*k2[i][k+34*Nx],fphp[i][k]+0.5*k2[i][k+35*Nx],fphm[i][k]+0.5*k2[i][k+36*Nx],fzphp[i][k]+0.5*k2[i][k+37*Nx],fzphm[i][k]+0.5*k2[i][k+38*Nx],fgp[i][k]+0.5*k2[i][k+39*Nx],fgm[i][k]+0.5*k2[i][k+40*Nx],fhzl[i][k]+0.5*k2[i][k+41*Nx],ftal[i][k]+0.5*k2[i][k+42*Nx],ftalb[i][k]+0.5*k2[i][k+43*Nx],ftar[i][k]+0.5*k2[i][k+44*Nx],ftarb[i][k]+0.5*k2[i][k+45*Nx],fnuta[i][k]+0.5*k2[i][k+46*Nx],fnutab[i][k]+0.5*k2[i][k+47*Nx],fcl[i][k]+0.5*k2[i][k+48*Nx],fclb[i][k]+0.5*k2[i][k+49*Nx],fcr[i][k]+0.5*k2[i][k+50*Nx],fcrb[i][k]+0.5*k2[i][k+51*Nx],fsl[i][k]+0.5*k2[i][k+52*Nx],fslb[i][k]+0.5*k2[i][k+53*Nx],k3,talpha);
 			}
 		}
 		for(j=0;j<Nx-1;j++){
-			k4 = RKj(i,j,Nx,t0+(i+1)*dt,dt,grid,deltagrid,fel[i][j]+k3[i][j],felb[i][j]+k3[i][j+Nx],fml[i][j]+k3[i][j+2*Nx],fnue[i][j]+k3[i][j+3*Nx],fnueb[i][j]+k3[i][j+4*Nx],fnum[i][j]+k3[i][j+5*Nx],fer[i][j]+k3[i][j+6*Nx],ferb[i][j]+k3[i][j+7*Nx],fmr[i][j]+k3[i][j+8*Nx],ful[i][j]+k3[i][j+9*Nx],fulb[i][j]+k3[i][j+10*Nx],ftl[i][j]+k3[i][j+11*Nx],ftlb[i][j]+k3[i][j+12*Nx],fdl[i][j]+k3[i][j+13*Nx],fdlb[i][j]+k3[i][j+14*Nx],fbl[i][j]+k3[i][j+15*Nx],fblb[i][j]+k3[i][j+16*Nx],fur[i][j]+k3[i][j+17*Nx],furb[i][j]+k3[i][j+18*Nx],ftr[i][j]+k3[i][j+19*Nx],ftrb[i][j]+k3[i][j+20*Nx],fdr[i][j]+k3[i][j+21*Nx],fdrb[i][j]+k3[i][j+22*Nx],fbr[i][j]+k3[i][j+23*Nx],fbrb[i][j]+k3[i][j+24*Nx],fh[i][j]+k3[i][j+25*Nx],fwpl[i][j]+k3[i][j+26*Nx],fwml[i][j]+k3[i][j+27*Nx],fzl[i][j]+k3[i][j+28*Nx],fwpp[i][j]+k3[i][j+29*Nx],fwpm[i][j]+k3[i][j+30*Nx],fwmp[i][j]+k3[i][j+31*Nx],fwmm[i][j]+k3[i][j+32*Nx],fzp[i][j]+k3[i][j+33*Nx],fzm[i][j]+k3[i][j+34*Nx],fphp[i][j]+k3[i][j+35*Nx],fphm[i][j]+k3[i][j+36*Nx],fzphp[i][j]+k3[i][j+37*Nx],fzphm[i][j]+k3[i][j+38*Nx],fgp[i][j]+k3[i][j+39*Nx],fgm[i][j]+k3[i][j+40*Nx],fhzl[i][j]+k3[i][j+41*Nx],k4,newterm(grid,deltagrid,j,Nx),talpha);
-			k4 = RKjuc(i,j,Nx,t0+(i+1)*dt,dt,grid,deltagrid,fel[i][j]+k3[i][j],felb[i][j]+k3[i][j+Nx],fml[i][j]+k3[i][j+2*Nx],fnue[i][j]+k3[i][j+3*Nx],fnueb[i][j]+k3[i][j+4*Nx],fnum[i][j]+k3[i][j+5*Nx],fer[i][j]+k3[i][j+6*Nx],ferb[i][j]+k3[i][j+7*Nx],fmr[i][j]+k3[i][j+8*Nx],ful[i][j]+k3[i][j+9*Nx],fulb[i][j]+k3[i][j+10*Nx],ftl[i][j]+k3[i][j+11*Nx],ftlb[i][j]+k3[i][j+12*Nx],fdl[i][j]+k3[i][j+13*Nx],fdlb[i][j]+k3[i][j+14*Nx],fbl[i][j]+k3[i][j+15*Nx],fblb[i][j]+k3[i][j+16*Nx],fur[i][j]+k3[i][j+17*Nx],furb[i][j]+k3[i][j+18*Nx],ftr[i][j]+k3[i][j+19*Nx],ftrb[i][j]+k3[i][j+20*Nx],fdr[i][j]+k3[i][j+21*Nx],fdrb[i][j]+k3[i][j+22*Nx],fbr[i][j]+k3[i][j+23*Nx],fbrb[i][j]+k3[i][j+24*Nx],fh[i][j]+k3[i][j+25*Nx],fwpl[i][j]+k3[i][j+26*Nx],fwml[i][j]+k3[i][j+27*Nx],fzl[i][j]+k3[i][j+28*Nx],fwpp[i][j]+k3[i][j+29*Nx],fwpm[i][j]+k3[i][j+30*Nx],fwmp[i][j]+k3[i][j+31*Nx],fwmm[i][j]+k3[i][j+32*Nx],fzp[i][j]+k3[i][j+33*Nx],fzm[i][j]+k3[i][j+34*Nx],fphp[i][j]+k3[i][j+35*Nx],fphm[i][j]+k3[i][j+36*Nx],fzphp[i][j]+k3[i][j+37*Nx],fzphm[i][j]+k3[i][j+38*Nx],fgp[i][j]+k3[i][j+39*Nx],fgm[i][j]+k3[i][j+40*Nx],fhzl[i][j]+k3[i][j+41*Nx],k4,newterm(grid,deltagrid,j,Nx),talpha);
+			k4 = RKj(i,j,Nx,t0+(i+1)*dt,dt,grid,deltagrid,fel[i][j]+k3[i][j],felb[i][j]+k3[i][j+Nx],fml[i][j]+k3[i][j+2*Nx],fnue[i][j]+k3[i][j+3*Nx],fnueb[i][j]+k3[i][j+4*Nx],fnum[i][j]+k3[i][j+5*Nx],fer[i][j]+k3[i][j+6*Nx],ferb[i][j]+k3[i][j+7*Nx],fmr[i][j]+k3[i][j+8*Nx],ful[i][j]+k3[i][j+9*Nx],fulb[i][j]+k3[i][j+10*Nx],ftl[i][j]+k3[i][j+11*Nx],ftlb[i][j]+k3[i][j+12*Nx],fdl[i][j]+k3[i][j+13*Nx],fdlb[i][j]+k3[i][j+14*Nx],fbl[i][j]+k3[i][j+15*Nx],fblb[i][j]+k3[i][j+16*Nx],fur[i][j]+k3[i][j+17*Nx],furb[i][j]+k3[i][j+18*Nx],ftr[i][j]+k3[i][j+19*Nx],ftrb[i][j]+k3[i][j+20*Nx],fdr[i][j]+k3[i][j+21*Nx],fdrb[i][j]+k3[i][j+22*Nx],fbr[i][j]+k3[i][j+23*Nx],fbrb[i][j]+k3[i][j+24*Nx],fh[i][j]+k3[i][j+25*Nx],fwpl[i][j]+k3[i][j+26*Nx],fwml[i][j]+k3[i][j+27*Nx],fzl[i][j]+k3[i][j+28*Nx],fwpp[i][j]+k3[i][j+29*Nx],fwpm[i][j]+k3[i][j+30*Nx],fwmp[i][j]+k3[i][j+31*Nx],fwmm[i][j]+k3[i][j+32*Nx],fzp[i][j]+k3[i][j+33*Nx],fzm[i][j]+k3[i][j+34*Nx],fphp[i][j]+k3[i][j+35*Nx],fphm[i][j]+k3[i][j+36*Nx],fzphp[i][j]+k3[i][j+37*Nx],fzphm[i][j]+k3[i][j+38*Nx],fgp[i][j]+k3[i][j+39*Nx],fgm[i][j]+k3[i][j+40*Nx],fhzl[i][j]+k3[i][j+41*Nx],ftal[i][j]+k3[i][j+42*Nx],ftalb[i][j]+k3[i][j+43*Nx],ftar[i][j]+k3[i][j+44*Nx],ftarb[i][j]+k3[i][j+45*Nx],fnuta[i][j]+k3[i][j+46*Nx],fnutab[i][j]+k3[i][j+47*Nx],fcl[i][j]+k3[i][j+48*Nx],fclb[i][j]+k3[i][j+49*Nx],fcr[i][j]+k3[i][j+50*Nx],fcrb[i][j]+k3[i][j+51*Nx],fsl[i][j]+k3[i][j+52*Nx],fslb[i][j]+k3[i][j+53*Nx],k4,newterm(grid,deltagrid,j,Nx),talpha);
+			k4 = RKjuc(i,j,Nx,t0+(i+1)*dt,dt,grid,deltagrid,fel[i][j]+k3[i][j],felb[i][j]+k3[i][j+Nx],fml[i][j]+k3[i][j+2*Nx],fnue[i][j]+k3[i][j+3*Nx],fnueb[i][j]+k3[i][j+4*Nx],fnum[i][j]+k3[i][j+5*Nx],fer[i][j]+k3[i][j+6*Nx],ferb[i][j]+k3[i][j+7*Nx],fmr[i][j]+k3[i][j+8*Nx],ful[i][j]+k3[i][j+9*Nx],fulb[i][j]+k3[i][j+10*Nx],ftl[i][j]+k3[i][j+11*Nx],ftlb[i][j]+k3[i][j+12*Nx],fdl[i][j]+k3[i][j+13*Nx],fdlb[i][j]+k3[i][j+14*Nx],fbl[i][j]+k3[i][j+15*Nx],fblb[i][j]+k3[i][j+16*Nx],fur[i][j]+k3[i][j+17*Nx],furb[i][j]+k3[i][j+18*Nx],ftr[i][j]+k3[i][j+19*Nx],ftrb[i][j]+k3[i][j+20*Nx],fdr[i][j]+k3[i][j+21*Nx],fdrb[i][j]+k3[i][j+22*Nx],fbr[i][j]+k3[i][j+23*Nx],fbrb[i][j]+k3[i][j+24*Nx],fh[i][j]+k3[i][j+25*Nx],fwpl[i][j]+k3[i][j+26*Nx],fwml[i][j]+k3[i][j+27*Nx],fzl[i][j]+k3[i][j+28*Nx],fwpp[i][j]+k3[i][j+29*Nx],fwpm[i][j]+k3[i][j+30*Nx],fwmp[i][j]+k3[i][j+31*Nx],fwmm[i][j]+k3[i][j+32*Nx],fzp[i][j]+k3[i][j+33*Nx],fzm[i][j]+k3[i][j+34*Nx],fphp[i][j]+k3[i][j+35*Nx],fphm[i][j]+k3[i][j+36*Nx],fzphp[i][j]+k3[i][j+37*Nx],fzphm[i][j]+k3[i][j+38*Nx],fgp[i][j]+k3[i][j+39*Nx],fgm[i][j]+k3[i][j+40*Nx],fhzl[i][j]+k3[i][j+41*Nx],ftal[i][j]+k3[i][j+42*Nx],ftalb[i][j]+k3[i][j+43*Nx],ftar[i][j]+k3[i][j+44*Nx],ftarb[i][j]+k3[i][j+45*Nx],fnuta[i][j]+k3[i][j+46*Nx],fnutab[i][j]+k3[i][j+47*Nx],fcl[i][j]+k3[i][j+48*Nx],fclb[i][j]+k3[i][j+49*Nx],fcr[i][j]+k3[i][j+50*Nx],fcrb[i][j]+k3[i][j+51*Nx],fsl[i][j]+k3[i][j+52*Nx],fslb[i][j]+k3[i][j+53*Nx],k4,newterm(grid,deltagrid,j,Nx),talpha);
 			for(k=j+1;k<Nx;k++){
-				k4 = RK(i,j,k,Nx,t0+(i+1)*dt,dt,grid,deltagrid,fel[i][k]+k3[i][k],felb[i][k]+k3[i][k+Nx],fml[i][k]+k3[i][k+2*Nx],fnue[i][k]+k3[i][k+3*Nx],fnueb[i][k]+k3[i][k+4*Nx],fnum[i][k]+k3[i][k+5*Nx],fer[i][k]+k3[i][k+6*Nx],ferb[i][k]+k3[i][k+7*Nx],fmr[i][k]+k3[i][k+8*Nx],ful[i][k]+k3[i][k+9*Nx],fulb[i][k]+k3[i][k+10*Nx],ftl[i][k]+k3[i][k+11*Nx],ftlb[i][k]+k3[i][k+12*Nx],fdl[i][k]+k3[i][k+13*Nx],fdlb[i][k]+k3[i][k+14*Nx],fbl[i][k]+k3[i][k+15*Nx],fblb[i][k]+k3[i][k+16*Nx],fur[i][k]+k3[i][k+17*Nx],furb[i][k]+k3[i][k+18*Nx],ftr[i][k]+k3[i][k+19*Nx],ftrb[i][k]+k3[i][k+20*Nx],fdr[i][k]+k3[i][k+21*Nx],fdrb[i][k]+k3[i][k+22*Nx],fbr[i][k]+k3[i][k+23*Nx],fbrb[i][k]+k3[i][k+24*Nx],fh[i][k]+k3[i][k+25*Nx],fwpl[i][k]+k3[i][k+26*Nx],fwml[i][k]+k3[i][k+27*Nx],fzl[i][k]+k3[i][k+28*Nx],fwpp[i][k]+k3[i][k+29*Nx],fwpm[i][k]+k3[i][k+30*Nx],fwmp[i][k]+k3[i][k+31*Nx],fwmm[i][k]+k3[i][k+32*Nx],fzp[i][k]+k3[i][k+33*Nx],fzm[i][k]+k3[i][k+34*Nx],fphp[i][k]+k3[i][k+35*Nx],fphm[i][k]+k3[i][k+36*Nx],fzphp[i][k]+k3[i][k+37*Nx],fzphm[i][k]+k3[i][k+38*Nx],fgp[i][k]+k3[i][k+39*Nx],fgm[i][k]+k3[i][k+40*Nx],fhzl[i][k]+k3[i][k+41*Nx],k4,talpha);
+				k4 = RK(i,j,k,Nx,t0+(i+1)*dt,dt,grid,deltagrid,fel[i][k]+k3[i][k],felb[i][k]+k3[i][k+Nx],fml[i][k]+k3[i][k+2*Nx],fnue[i][k]+k3[i][k+3*Nx],fnueb[i][k]+k3[i][k+4*Nx],fnum[i][k]+k3[i][k+5*Nx],fer[i][k]+k3[i][k+6*Nx],ferb[i][k]+k3[i][k+7*Nx],fmr[i][k]+k3[i][k+8*Nx],ful[i][k]+k3[i][k+9*Nx],fulb[i][k]+k3[i][k+10*Nx],ftl[i][k]+k3[i][k+11*Nx],ftlb[i][k]+k3[i][k+12*Nx],fdl[i][k]+k3[i][k+13*Nx],fdlb[i][k]+k3[i][k+14*Nx],fbl[i][k]+k3[i][k+15*Nx],fblb[i][k]+k3[i][k+16*Nx],fur[i][k]+k3[i][k+17*Nx],furb[i][k]+k3[i][k+18*Nx],ftr[i][k]+k3[i][k+19*Nx],ftrb[i][k]+k3[i][k+20*Nx],fdr[i][k]+k3[i][k+21*Nx],fdrb[i][k]+k3[i][k+22*Nx],fbr[i][k]+k3[i][k+23*Nx],fbrb[i][k]+k3[i][k+24*Nx],fh[i][k]+k3[i][k+25*Nx],fwpl[i][k]+k3[i][k+26*Nx],fwml[i][k]+k3[i][k+27*Nx],fzl[i][k]+k3[i][k+28*Nx],fwpp[i][k]+k3[i][k+29*Nx],fwpm[i][k]+k3[i][k+30*Nx],fwmp[i][k]+k3[i][k+31*Nx],fwmm[i][k]+k3[i][k+32*Nx],fzp[i][k]+k3[i][k+33*Nx],fzm[i][k]+k3[i][k+34*Nx],fphp[i][k]+k3[i][k+35*Nx],fphm[i][k]+k3[i][k+36*Nx],fzphp[i][k]+k3[i][k+37*Nx],fzphm[i][k]+k3[i][k+38*Nx],fgp[i][k]+k3[i][k+39*Nx],fgm[i][k]+k3[i][k+40*Nx],fhzl[i][k]+k3[i][k+41*Nx],ftal[i][k]+k3[i][k+42*Nx],ftalb[i][k]+k3[i][k+43*Nx],ftar[i][k]+k3[i][k+44*Nx],ftarb[i][k]+k3[i][k+45*Nx],fnuta[i][k]+k3[i][k+46*Nx],fnutab[i][k]+k3[i][k+47*Nx],fcl[i][k]+k3[i][k+48*Nx],fclb[i][k]+k3[i][k+49*Nx],fcr[i][k]+k3[i][k+50*Nx],fcrb[i][k]+k3[i][k+51*Nx],fsl[i][k]+k3[i][k+52*Nx],fslb[i][k]+k3[i][k+53*Nx],k4,talpha);
 			}
 		}
 		for(j=0;j<Nx-1;j++){
@@ -547,8 +581,20 @@ int main(){
 			fgp[i+1][j] = fgp[i][j] + k1[i][j+39*Nx]/6 + k2[i][j+39*Nx]/3 + k3[i][j+39*Nx]/3 + k4[i][j+39*Nx]/6;
 			fgm[i+1][j] = fgm[i][j] + k1[i][j+40*Nx]/6 + k2[i][j+40*Nx]/3 + k3[i][j+40*Nx]/3 + k4[i][j+40*Nx]/6;
 			fhzl[i+1][j] = fhzl[i][j] + k1[i][j+41*Nx]/6 + k2[i][j+41*Nx]/3 + k3[i][j+41*Nx]/3 + k4[i][j+41*Nx]/6;
+			ftal[i+1][j] = ftal[i][j] + k1[i][j+42*Nx]/6 + k2[i][j+42*Nx]/3 + k3[i][j+42*Nx]/3 + k4[i][j+42*Nx]/6;
+			ftalb[i+1][j] = ftalb[i][j] + k1[i][j+43*Nx]/6 + k2[i][j+43*Nx]/3 + k3[i][j+43*Nx]/3 + k4[i][j+43*Nx]/6;
+			ftar[i+1][j] = ftar[i][j] + k1[i][j+44*Nx]/6 + k2[i][j+44*Nx]/3 + k3[i][j+44*Nx]/3 + k4[i][j+44*Nx]/6;
+			ftarb[i+1][j] = ftarb[i][j] + k1[i][j+45*Nx]/6 + k2[i][j+45*Nx]/3 + k3[i][j+45*Nx]/3 + k4[i][j+45*Nx]/6;
+			fnuta[i+1][j] = fnuta[i][j] + k1[i][j+46*Nx]/6 + k2[i][j+46*Nx]/3 + k3[i][j+46*Nx]/3 + k4[i][j+46*Nx]/6;
+			fnutab[i+1][j] = fnutab[i][j] + k1[i][j+47*Nx]/6 + k2[i][j+47*Nx]/3 + k3[i][j+47*Nx]/3 + k4[i][j+47*Nx]/6;
+			fcl[i+1][j] = fcl[i][j] + k1[i][j+48*Nx]/6 + k2[i][j+48*Nx]/3 + k3[i][j+48*Nx]/3 + k4[i][j+48*Nx]/6;
+			fclb[i+1][j] = fclb[i][j] + k1[i][j+49*Nx]/6 + k2[i][j+49*Nx]/3 + k3[i][j+49*Nx]/3 + k4[i][j+49*Nx]/6;
+			fcr[i+1][j] = fcr[i][j] + k1[i][j+50*Nx]/6 + k2[i][j+50*Nx]/3 + k3[i][j+50*Nx]/3 + k4[i][j+50*Nx]/6;
+			fcrb[i+1][j] = fcrb[i][j] + k1[i][j+51*Nx]/6 + k2[i][j+51*Nx]/3 + k3[i][j+51*Nx]/3 + k4[i][j+51*Nx]/6;
+			fsl[i+1][j] = fsl[i][j] + k1[i][j+52*Nx]/6 + k2[i][j+52*Nx]/3 + k3[i][j+52*Nx]/3 + k4[i][j+52*Nx]/6;
+			fslb[i+1][j] = fslb[i][j] + k1[i][j+53*Nx]/6 + k2[i][j+53*Nx]/3 + k3[i][j+53*Nx]/3 + k4[i][j+53*Nx]/6;
 		}
-		fml[i+1][Nx-1] = Lt(grid,deltagrid,Nx,i+1,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fgp,fgm)/deltagrid[Nx-1];
+		fml[i+1][Nx-1] = Lt(grid,deltagrid,Nx,i+1,fel,felb,fml,ftal,ftalb,fnue,fnueb,fnum,fnuta,fnutab,fer,ferb,fmr,ftar,ftarb,ful,fulb,fcl,fclb,ftl,ftlb,fdl,fdlb,fsl,fslb,fbl,fblb,fur,furb,fcr,fcrb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fgp,fgm)/deltagrid[Nx-1];
 		fmr[i+1][Nx-1] = fml[i+1][Nx-1];
 	}
 	printf("SM evolution completed.\n");
@@ -599,20 +645,20 @@ int main(){
 			printf("Electron 5FS: ");
 			for(i=0;i<lr;i++){
 				for(j=iw;j<Nt0-1;j+=itSteps){
-					write = e5FS0(rgrid[i],j,lhapdf,grid,fe,fm,fu,fd,fb,fph,fg);
+					write = e5FS0(rgrid[i],j,lhapdf,grid,fe,fm,fu,fd,fb,fph,fg,fc,ftau);
 				}
 				for(j=0;j<Nt;j+=itSteps){
-					write = e5FS(rgrid[i],j,lhapdf,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl);
+					write = e5FS(rgrid[i],j,lhapdf,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl,ftal,ftalb,ftar,ftarb,fnuta,fnutab,fcl,fclb,fcr,fcrb,fsl,fslb);
 				}
 			}
 			printf("done!\n");
 			printf("Positron 5FS: ");
 			for(i=0;i<lr;i++){
 				for(j=iw;j<Nt0-1;j+=itSteps){
-					write = eb5FS0(rgrid[i],j,lhapdfbar,grid,fe,fm,fu,fd,fb,fph,fg);
+					write = eb5FS0(rgrid[i],j,lhapdfbar,grid,fe,fm,fu,fd,fb,fph,fg,fc,ftau);
 				}
 				for(j=0;j<Nt;j+=itSteps){
-					write = eb5FS(rgrid[i],j,lhapdfbar,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl);
+					write = eb5FS(rgrid[i],j,lhapdfbar,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl,ftal,ftalb,ftar,ftarb,fnuta,fnutab,fcl,fclb,fcr,fcrb,fsl,fslb);
 				}
 			}
 			printf("done!\n");
@@ -621,20 +667,20 @@ int main(){
 			printf("Muon 5FS: ");
 			for(i=0;i<lr;i++){
 				for(j=iw;j<Nt0-1;j+=itSteps){
-					write = mu5FS0(rgrid[i],j,lhapdf,grid,fe,fm,fu,fd,fb,fph,fg);
+					write = mu5FS0(rgrid[i],j,lhapdf,grid,fe,fm,fu,fd,fb,fph,fg,fc,ftau);
 				}
 				for(j=0;j<Nt;j+=itSteps){
-					write = mu5FS(rgrid[i],j,lhapdf,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl);
+					write = mu5FS(rgrid[i],j,lhapdf,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl,ftal,ftalb,ftar,ftarb,fnuta,fnutab,fcl,fclb,fcr,fcrb,fsl,fslb);
 				}
 			}
 			printf("done!\n");
 			printf("Antimuon 5FS: ");
 			for(i=0;i<lr;i++){
 				for(j=iw;j<Nt0-1;j+=itSteps){
-					write = mub5FS0(rgrid[i],j,lhapdfbar,grid,fe,fm,fu,fd,fb,fph,fg);
+					write = mub5FS0(rgrid[i],j,lhapdfbar,grid,fe,fm,fu,fd,fb,fph,fg,fc,ftau);
 				}
 				for(j=0;j<Nt;j+=itSteps){
-					write = mub5FS(rgrid[i],j,lhapdfbar,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl);
+					write = mub5FS(rgrid[i],j,lhapdfbar,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl,ftal,ftalb,ftar,ftarb,fnuta,fnutab,fcl,fclb,fcr,fcrb,fsl,fslb);
 				}
 			}
 			printf("done!\n");
@@ -652,20 +698,20 @@ int main(){
 			printf("Electron 6FS: ");
 			for(i=0;i<lr;i++){
 				for(j=iw;j<Nt0-1;j+=itSteps){
-					write = e6FS0(rgrid[i],j,lhapdf,grid,fe,fm,fu,fd,fb,fph,fg);
+					write = e6FS0(rgrid[i],j,lhapdf,grid,fe,fm,fu,fd,fb,fph,fg,fc,ftau);
 				}
 				for(j=0;j<Nt;j+=itSteps){
-					write = e6FS(rgrid[i],j,lhapdf,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl);
+					write = e6FS(rgrid[i],j,lhapdf,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl,ftal,ftalb,ftar,ftarb,fnuta,fnutab,fcl,fclb,fcr,fcrb,fsl,fslb);
 				}
 			}
 			printf("done!\n");
 			printf("Positron 6FS: ");
 			for(i=0;i<lr;i++){
 				for(j=iw;j<Nt0-1;j+=itSteps){
-					write = eb6FS0(rgrid[i],j,lhapdfbar,grid,fe,fm,fu,fd,fb,fph,fg);
+					write = eb6FS0(rgrid[i],j,lhapdfbar,grid,fe,fm,fu,fd,fb,fph,fg,fc,ftau);
 				}
 				for(j=0;j<Nt;j+=itSteps){
-					write = eb6FS(rgrid[i],j,lhapdfbar,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl);
+					write = eb6FS(rgrid[i],j,lhapdfbar,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl,ftal,ftalb,ftar,ftarb,fnuta,fnutab,fcl,fclb,fcr,fcrb,fsl,fslb);
 				}
 			}
 			printf("done!\n");
@@ -674,20 +720,20 @@ int main(){
 			printf("Muon 6FS: ");
 			for(i=0;i<lr;i++){
 				for(j=iw;j<Nt0-1;j+=itSteps){
-					write = mu6FS0(rgrid[i],j,lhapdf,grid,fe,fm,fu,fd,fb,fph,fg);
+					write = mu6FS0(rgrid[i],j,lhapdf,grid,fe,fm,fu,fd,fb,fph,fg,fc,ftau);
 				}
 				for(j=0;j<Nt;j+=itSteps){
-					write = mu6FS(rgrid[i],j,lhapdf,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl);
+					write = mu6FS(rgrid[i],j,lhapdf,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl,ftal,ftalb,ftar,ftarb,fnuta,fnutab,fcl,fclb,fcr,fcrb,fsl,fslb);
 				}
 			}
 			printf("done!\n");
 			printf("Antimuon 6FS: ");
 			for(i=0;i<lr;i++){
 				for(j=iw;j<Nt0-1;j+=itSteps){
-					write = mub6FS0(rgrid[i],j,lhapdfbar,grid,fe,fm,fu,fd,fb,fph,fg);
+					write = mub6FS0(rgrid[i],j,lhapdfbar,grid,fe,fm,fu,fd,fb,fph,fg,fc,ftau);
 				}
 				for(j=0;j<Nt;j+=itSteps){
-					write = mub6FS(rgrid[i],j,lhapdfbar,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl);
+					write = mub6FS(rgrid[i],j,lhapdfbar,grid,fel,felb,fml,fnue,fnueb,fnum,fer,ferb,fmr,ful,fulb,ftl,ftlb,fdl,fdlb,fbl,fblb,fur,furb,ftr,ftrb,fdr,fdrb,fbr,fbrb,fh,fwpl,fwml,fzl,fwpp,fwpm,fwmp,fwmm,fzp,fzm,fphp,fphm,fzphp,fzphm,fgp,fgm,fhzl,ftal,ftalb,ftar,ftarb,fnuta,fnutab,fcl,fclb,fcr,fcrb,fsl,fslb);
 				}
 			}
 			printf("done!\n");
@@ -697,7 +743,9 @@ int main(){
 	/* ----------------------- Freeing memory allocation ----------------------- */
 	freemat(fe,Nt0);
 	freemat(fm,Nt0);
+	freemat(ftau,Nt0);
 	freemat(fu,Nt0);
+	freemat(fc,Nt0);
 	freemat(fd,Nt0);
 	freemat(fb,Nt0);
 	freemat(fph,Nt0);
@@ -708,17 +756,29 @@ int main(){
 	freemat(ferb,Nt);
 	freemat(fml,Nt);
 	freemat(fmr,Nt);
+	freemat(ftal,Nt);
+	freemat(ftalb,Nt);
+	freemat(ftar,Nt);
+	freemat(ftarb,Nt);
 	freemat(fnue,Nt);
 	freemat(fnueb,Nt);
 	freemat(fnum,Nt);
+	freemat(fnuta,Nt);
+	freemat(fnutab,Nt);
 	freemat(ful,Nt);
 	freemat(fulb,Nt);
 	freemat(fur,Nt);
 	freemat(furb,Nt);
+	freemat(fcl,Nt);
+	freemat(fclb,Nt);
+	freemat(fcr,Nt);
+	freemat(fcrb,Nt);
 	freemat(fdl,Nt);
 	freemat(fdlb,Nt);
 	freemat(fdr,Nt);
 	freemat(fdrb,Nt);
+	freemat(fsl,Nt);
+	freemat(fslb,Nt);
 	freemat(ftl,Nt);
 	freemat(ftlb,Nt);
 	freemat(ftr,Nt);
