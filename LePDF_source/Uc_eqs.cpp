@@ -1,11 +1,11 @@
-/*Ultra-collinear evolution for left-handed leptons (same expression for el, elb, ml)*/
+/*Ultra-collinear evolution for left-handed leptons (same expression for el, elb, ml, tal, talb)*/
 double keluc(int j, int k, double *x, double *dx, double t, double dt, double fe, double fnu, double fwl, double fzl){
 	double b;
 	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(cut(x[j],x[k],mu(t))*prop2(t,0,0,mw,x[j]/x[k])*Pucfl2fl1wl(x[j]/x[k],alpha2(t),0,0)*fnu+prop2(t,0,0,mz,x[j]/x[k])*theta(t,tz)*Pucflflzl(x[j]/x[k],alpha2(t),0,t,-0.5,-1)*fe+prop2(t,mw,0,0,x[j]/x[k])*Pucfl1wlflb2(x[j]/x[k],alpha2(t),0,0,1)*fwl+prop2(t,mz,0,0,x[j]/x[k])*theta(t,tz)*Pucflzlflb(x[j]/x[k],alpha2(t),0,t,-0.5,-1,1)*fzl);
 	return b;
 }
 
-/*Ultra-collinear evolution for neutrinos (same expression for nue, nueb, num)*/
+/*Ultra-collinear evolution for neutrinos (same expression for nue, nueb, num, nuta, nutab)*/
 double knuuc(int j, int k, double *x, double *dx, double t, double dt, double fe, double fnu, double fwl, double fzl){
 	double b;
 	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(cut(x[j],x[k],mu(t))*prop2(t,0,0,mw,x[j]/x[k])*Pucfl2fl1wl(x[j]/x[k],alpha2(t),0,0)*fe+prop2(t,0,0,mz,x[j]/x[k])*theta(t,tz)*Pucflflzl(x[j]/x[k],alpha2(t),0,t,0.5,0)*fnu+prop2(t,mw,0,0,x[j]/x[k])*Pucfl1wlflb2(x[j]/x[k],alpha2(t),0,0,1)*fwl+prop2(t,mz,0,0,x[j]/x[k])*theta(t,tz)*Pucflzlflb(x[j]/x[k],alpha2(t),0,t,0.5,0,1)*fzl);
@@ -13,7 +13,7 @@ double knuuc(int j, int k, double *x, double *dx, double t, double dt, double fe
 
 }
 
-/*Ultra-collinear evolution for left-handed up quarks (same expression for ul, ulb)*/
+/*Ultra-collinear evolution for left-handed up quarks (same expression for ul, ulb, cl, clb)*/
 double kuluc(int j, int k, double *x, double *dx, double t, double dt, double fu, double fd, double fwl, double fzl){
 	double b;
 	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(cut(x[j],x[k],mu(t))*prop2(t,0,0,mw,x[j]/x[k])*Pucfl2fl1wl(x[j]/x[k],alpha2(t),0,0)*fd+prop2(t,0,0,mz,x[j]/x[k])*theta(t,tz)*Pucflflzl(x[j]/x[k],alpha2(t),0,t,0.5,Qu)*fu+prop2(t,mw,0,0,x[j]/x[k])*Pucfl1wlflb2(x[j]/x[k],alpha2(t),0,0,3)*fwl+prop2(t,mz,0,0,x[j]/x[k])*theta(t,tz)*Pucflzlflb(x[j]/x[k],alpha2(t),0,t,0.5,Qu,3)*fzl);
@@ -41,14 +41,14 @@ double kbluc(int j, int k, double *x, double *dx, double t, double dt, double fb
 	return b;
 }
 
-/*Ultra-collinear evolution for right-handed leptons (same expression for er, erb, mr)*/
+/*Ultra-collinear evolution for right-handed leptons (same expression for er, erb, mr, tar, tarb)*/
 double keruc(int j, int k, double *x, double *dx, double t, double dt, double fe, double fzl){
 	double b;
 	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*theta(t,tz)*(prop2(t,0,0,mz,x[j]/x[k])*Pucfrfrzl(x[j]/x[k],alpha2(t),0,t,0,Ql)*fe+prop2(t,mz,0,0,x[j]/x[k])*Pucfrzlfrb(x[j]/x[k],alpha2(t),0,t,0,Ql,1)*fzl);
 	return b;
 }
 
-/*Ultra-collinear evolution for right-handed up quarks (same expression for ur, urb)*/
+/*Ultra-collinear evolution for right-handed up quarks (same expression for ur, urb, cr, crb)*/
 double kuruc(int j, int k, double *x, double *dx, double t, double dt, double fu, double fzl){
 	double b;
 	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*theta(t,tz)*(prop2(t,0,0,mz,x[j]/x[k])*Pucfrfrzl(x[j]/x[k],alpha2(t),0,t,0,Qu)*fu+prop2(t,mz,0,0,x[j]/x[k])*Pucfrzlfrb(x[j]/x[k],alpha2(t),0,t,0,Qu,3)*fzl);
@@ -76,21 +76,21 @@ double khuc(int j, int k, double *x, double *dx, double t, double dt, double fwp
 	return b;
 }
 
-double kwlpuc(int j, int k, double *x, double *dx, double t, double dt, double fwl, double fwp, double fwm, double fzl, double fzp, double fzm, double fphp, double fphm, double fzphp, double fzphm, double fh, double fhzl, double felb, double fnue, double fnum, double ful, double ftl, double fdlb, double fblb, double **alpha){
+double kwlpuc(int j, int k, double *x, double *dx, double t, double dt, double fwl, double fwp, double fwm, double fzl, double fzp, double fzm, double fphp, double fphm, double fzphp, double fzphm, double fh, double fhzl, double felb, double ftalb, double fnue, double fnum, double fnuta, double ful, double fcl, double ftl, double fdlb, double fslb, double fblb, double **alpha){
 	double b;
-	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(prop2(t,0,mw,0,x[j]/x[k])*Pucwlfl1fl2(x[j]/x[k],alpha2(t),0,0)*(2*fnue+fnum+3*felb+2*ful+2*fdlb)+prop2(t,mt,mw,0,x[j]/x[k])*theta(t,tt)*Pucwlfl1fl2(x[j]/x[k],alpha2(t),alphay(t,alpha),0)*ftl+prop2(t,0,mw,mt,x[j]/x[k])*theta(t,tt)*Pucwlfl1fl2(x[j]/x[k],alpha2(t),0,alphay(t,alpha))*fblb+prop2(t,mw,mw,0,x[j]/x[k])*Pucwlwtph(x[j]/x[k],alphaem(t),alpha2(t))*(fwp+fwm)+prop2(t,mw,mw,mz,x[j]/x[k])*theta(t,tz)*Pucwlwtzt(x[j]/x[k],alpha2(t),t)*(fwp+fwm)+prop2(t,mz,mw,mw,x[j]/x[k])*theta(t,tz)*Pucwlztwt(x[j]/x[k],alpha2(t),t)*(fzp+fzm)+prop2(t,0,mw,mw,x[j]/x[k])*Pucwlphwt(x[j]/x[k],alphaem(t),alpha2(t))*(fphp+fphm)+prop(t,0,mw,mw,x[j]/x[k])*prop(t,mz,mw,mw,x[j]/x[k])*theta(t,tz)*Pucwlzphwt(x[j]/x[k],alpham(t),alpha2(t),t)*(fzphp+fzphm)+prop2(t,mh,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Pucwlhwl(x[j]/x[k],alpha2(t))*fh+prop2(t,mz,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,tz)*Pucwlzlwl(x[j]/x[k],alpha2(t),t)*fzl+prop2(t,mw,mw,mh,x[j]/x[k])*theta(t,th)*Pucwlwlh(x[j]/x[k],alpha2(t))*fwl+prop2(t,mw,mw,mz,x[j]/x[k])*theta(t,tz)*Pucwlwlzl(x[j]/x[k],alpha2(t),t)*fwl+prop(t,mh,mw,mw,x[j]/x[k])*prop(t,mz,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Pucwlhzlwl(x[j]/x[k],alpha2(t),t)*fhzl);
+	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(prop2(t,0,mw,0,x[j]/x[k])*Pucwlfl1fl2(x[j]/x[k],alpha2(t),0,0)*(fnue+fnum+fnuta+2*felb+ftalb+ful+fcl+fdlb+fslb)+prop2(t,mt,mw,0,x[j]/x[k])*theta(t,tt)*Pucwlfl1fl2(x[j]/x[k],alpha2(t),alphay(t,alpha),0)*ftl+prop2(t,0,mw,mt,x[j]/x[k])*theta(t,tt)*Pucwlfl1fl2(x[j]/x[k],alpha2(t),0,alphay(t,alpha))*fblb+prop2(t,mw,mw,0,x[j]/x[k])*Pucwlwtph(x[j]/x[k],alphaem(t),alpha2(t))*(fwp+fwm)+prop2(t,mw,mw,mz,x[j]/x[k])*theta(t,tz)*Pucwlwtzt(x[j]/x[k],alpha2(t),t)*(fwp+fwm)+prop2(t,mz,mw,mw,x[j]/x[k])*theta(t,tz)*Pucwlztwt(x[j]/x[k],alpha2(t),t)*(fzp+fzm)+prop2(t,0,mw,mw,x[j]/x[k])*Pucwlphwt(x[j]/x[k],alphaem(t),alpha2(t))*(fphp+fphm)+prop(t,0,mw,mw,x[j]/x[k])*prop(t,mz,mw,mw,x[j]/x[k])*theta(t,tz)*Pucwlzphwt(x[j]/x[k],alpham(t),alpha2(t),t)*(fzphp+fzphm)+prop2(t,mh,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Pucwlhwl(x[j]/x[k],alpha2(t))*fh+prop2(t,mz,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,tz)*Pucwlzlwl(x[j]/x[k],alpha2(t),t)*fzl+prop2(t,mw,mw,mh,x[j]/x[k])*theta(t,th)*Pucwlwlh(x[j]/x[k],alpha2(t))*fwl+prop2(t,mw,mw,mz,x[j]/x[k])*theta(t,tz)*Pucwlwlzl(x[j]/x[k],alpha2(t),t)*fwl+prop(t,mh,mw,mw,x[j]/x[k])*prop(t,mz,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Pucwlhzlwl(x[j]/x[k],alpha2(t),t)*fhzl);
 	return b;
 }
 
-double kwlmuc(int j, int k, double *x, double *dx, double t, double dt, double fwl, double fwp, double fwm, double fzl, double fzp, double fzm, double fphp, double fphm, double fzphp, double fzphm, double fh, double fhzl, double fel, double fml, double fnub, double fulb, double ftlb, double fdl, double fbl, double **alpha){
+double kwlmuc(int j, int k, double *x, double *dx, double t, double dt, double fwl, double fwp, double fwm, double fzl, double fzp, double fzm, double fphp, double fphm, double fzphp, double fzphm, double fh, double fhzl, double fel, double fml, double ftal, double fnueb, double fnutab, double fulb, double fclb, double ftlb, double fdl, double fsl, double fbl, double **alpha){
 	double b;
-	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(prop2(t,0,mw,0,x[j]/x[k])*Pucwlfl1fl2(x[j]/x[k],alpha2(t),0,0)*(3*fnub+2*fel+fml+2*fulb+2*fdl)+prop2(t,mt,mw,0,x[j]/x[k])*theta(t,tt)*Pucwlfl1fl2(x[j]/x[k],alpha2(t),alphay(t,alpha),0)*ftlb+prop2(t,0,mw,mt,x[j]/x[k])*theta(t,tt)*Pucwlfl1fl2(x[j]/x[k],alpha2(t),0,alphay(t,alpha))*fbl+prop2(t,mw,mw,0,x[j]/x[k])*Pucwlwtph(x[j]/x[k],alphaem(t),alpha2(t))*(fwp+fwm)+prop2(t,mw,mw,mz,x[j]/x[k])*theta(t,tz)*Pucwlwtzt(x[j]/x[k],alpha2(t),t)*(fwp+fwm)+prop2(t,mz,mw,mw,x[j]/x[k])*theta(t,tz)*Pucwlztwt(x[j]/x[k],alpha2(t),t)*(fzp+fzm)+prop2(t,0,mw,mw,x[j]/x[k])*Pucwlphwt(x[j]/x[k],alphaem(t),alpha2(t))*(fphp+fphm)+prop(t,0,mw,mw,x[j]/x[k])*prop(t,mz,mw,mw,x[j]/x[k])*theta(t,tz)*Pucwlzphwt(x[j]/x[k],alpham(t),alpha2(t),t)*(fzphp+fzphm)+prop2(t,mh,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Pucwlhwl(x[j]/x[k],alpha2(t))*fh+prop2(t,mz,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,tz)*Pucwlzlwl(x[j]/x[k],alpha2(t),t)*fzl+prop2(t,mw,mw,mh,x[j]/x[k])*theta(t,th)*Pucwlwlh(x[j]/x[k],alpha2(t))*fwl+prop2(t,mw,mw,mz,x[j]/x[k])*theta(t,tz)*Pucwlwlzl(x[j]/x[k],alpha2(t),t)*fwl-prop(t,mh,mw,mw,x[j]/x[k])*prop(t,mz,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Pucwlhzlwl(x[j]/x[k],alpha2(t),t)*fhzl);
+	b = dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(prop2(t,0,mw,0,x[j]/x[k])*Pucwlfl1fl2(x[j]/x[k],alpha2(t),0,0)*(2*fnueb+fnutab+fel+fml+ftal+fulb+fclb+fdl+fsl)+prop2(t,mt,mw,0,x[j]/x[k])*theta(t,tt)*Pucwlfl1fl2(x[j]/x[k],alpha2(t),alphay(t,alpha),0)*ftlb+prop2(t,0,mw,mt,x[j]/x[k])*theta(t,tt)*Pucwlfl1fl2(x[j]/x[k],alpha2(t),0,alphay(t,alpha))*fbl+prop2(t,mw,mw,0,x[j]/x[k])*Pucwlwtph(x[j]/x[k],alphaem(t),alpha2(t))*(fwp+fwm)+prop2(t,mw,mw,mz,x[j]/x[k])*theta(t,tz)*Pucwlwtzt(x[j]/x[k],alpha2(t),t)*(fwp+fwm)+prop2(t,mz,mw,mw,x[j]/x[k])*theta(t,tz)*Pucwlztwt(x[j]/x[k],alpha2(t),t)*(fzp+fzm)+prop2(t,0,mw,mw,x[j]/x[k])*Pucwlphwt(x[j]/x[k],alphaem(t),alpha2(t))*(fphp+fphm)+prop(t,0,mw,mw,x[j]/x[k])*prop(t,mz,mw,mw,x[j]/x[k])*theta(t,tz)*Pucwlzphwt(x[j]/x[k],alpham(t),alpha2(t),t)*(fzphp+fzphm)+prop2(t,mh,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Pucwlhwl(x[j]/x[k],alpha2(t))*fh+prop2(t,mz,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,tz)*Pucwlzlwl(x[j]/x[k],alpha2(t),t)*fzl+prop2(t,mw,mw,mh,x[j]/x[k])*theta(t,th)*Pucwlwlh(x[j]/x[k],alpha2(t))*fwl+prop2(t,mw,mw,mz,x[j]/x[k])*theta(t,tz)*Pucwlwlzl(x[j]/x[k],alpha2(t),t)*fwl-prop(t,mh,mw,mw,x[j]/x[k])*prop(t,mz,mw,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Pucwlhzlwl(x[j]/x[k],alpha2(t),t)*fhzl);
 	return b;
 }
 
-double kzluc(int j, int k, double *x, double *dx, double t, double dt, double fwpl, double fwml, double fwpp, double fwmp, double fwpm, double fwmm, double fzl, double fh, double fel, double fml, double felb, double fnue, double fnum, double fnub, double fer, double fmr, double ferb, double ful, double fulb, double ftl, double ftlb, double fdl, double fdlb, double fbl, double fblb, double fur, double furb, double ftr, double ftrb, double fdr, double fdrb, double fbr, double fbrb, double **alpha){
+double kzluc(int j, int k, double *x, double *dx, double t, double dt, double fwpl, double fwml, double fwpp, double fwmp, double fwpm, double fwmm, double fzl, double fh, double fel, double fml, double ftal, double felb, double ftalb, double fnue, double fnum, double fnuta, double fnueb, double fnutab, double fer, double fmr, double ftar, double ferb, double ftarb, double ful, double fulb, double fcl, double fclb, double ftl, double ftlb, double fdl, double fdlb, double fsl, double fslb, double fbl, double fblb, double fur, double furb, double fcr, double fcrb, double ftr, double ftrb, double fdr, double fdrb, double fbr, double fbrb, double **alpha){
 	double b;
-	b = theta(t,tz)*dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(prop2(t,0,mz,0,x[j]/x[k])*Puczlflfl(x[j]/x[k],alpha2(t),0,t,0.5,0)*(2*fnue+fnum+3*fnub)+prop2(t,0,mz,0,x[j]/x[k])*Puczlflfl(x[j]/x[k],alpha2(t),0,t,-0.5,Ql)*(2*fel+fml+3*felb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlflfl(x[j]/x[k],alpha2(t),0,t,0.5,Qu)*(2*ful+2*fulb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlflfl(x[j]/x[k],alpha2(t),0,t,-0.5,Qd)*(2*fdl+fbl+2*fdlb+fblb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlfrfr(x[j]/x[k],alpha2(t),0,t,0,Ql)*(2*fer+fmr+3*ferb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlfrfr(x[j]/x[k],alpha2(t),0,t,0,Qu)*(2*fur+2*furb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlfrfr(x[j]/x[k],alpha2(t),0,t,0,Qd)*(2*fdr+fbr+2*fdrb+fbrb)+prop2(t,mt,mz,mt,x[j]/x[k])*theta(t,tt)*(Puczlflfl(x[j]/x[k],alpha2(t),alphay(t,alpha),t,0.5,Qu)*(ftl+ftlb)+Puczlfrfr(x[j]/x[k],alpha2(t),alphay(t,alpha),t,0.5,Qu)*(ftr+ftrb))+prop2(t,mw,mz,mw,x[j]/x[k])*Puczlwtwt(x[j]/x[k],alpha2(t))*(fwpp+fwmp+fwpm+fwmm)+prop2(t,mz,mz,mh,x[j]/x[k])*theta(t,th)*Puczlzlh(x[j]/x[k],alpha2(t),t)*fzl+prop2(t,mh,mz,mz,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Puczlhzl(x[j]/x[k],alpha2(t),t)*fh+prop2(t,mw,mz,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*Puczlwlwl(x[j]/x[k],alpha2(t),t)*(fwpl+fwml));
+	b = theta(t,tz)*dt*(dx[k]/x[k])*pow(double(1)/mu(t),2)*(prop2(t,0,mz,0,x[j]/x[k])*Puczlflfl(x[j]/x[k],alpha2(t),0,t,0.5,0)*(fnue+fnum+fnuta+2*fnueb+fnutab)+prop2(t,0,mz,0,x[j]/x[k])*Puczlflfl(x[j]/x[k],alpha2(t),0,t,-0.5,Ql)*(fel+fml+ftal+2*felb+ftalb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlflfl(x[j]/x[k],alpha2(t),0,t,0.5,Qu)*(ful+fcl+fulb+fclb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlflfl(x[j]/x[k],alpha2(t),0,t,-0.5,Qd)*(fdl+fsl+fbl+fdlb+fslb+fblb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlfrfr(x[j]/x[k],alpha2(t),0,t,0,Ql)*(fer+fmr+ftar+2*ferb+ftarb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlfrfr(x[j]/x[k],alpha2(t),0,t,0,Qu)*(fur+fcr+furb+fcrb)+prop2(t,0,mz,0,x[j]/x[k])*Puczlfrfr(x[j]/x[k],alpha2(t),0,t,0,Qd)*(2*fdr+fbr+2*fdrb+fbrb)+prop2(t,mt,mz,mt,x[j]/x[k])*theta(t,tt)*(Puczlflfl(x[j]/x[k],alpha2(t),alphay(t,alpha),t,0.5,Qu)*(ftl+ftlb)+Puczlfrfr(x[j]/x[k],alpha2(t),alphay(t,alpha),t,0.5,Qu)*(ftr+ftrb))+prop2(t,mw,mz,mw,x[j]/x[k])*Puczlwtwt(x[j]/x[k],alpha2(t))*(fwpp+fwmp+fwpm+fwmm)+prop2(t,mz,mz,mh,x[j]/x[k])*theta(t,th)*Puczlzlh(x[j]/x[k],alpha2(t),t)*fzl+prop2(t,mh,mz,mz,x[j]/x[k])*cut(x[j],x[k],mu(t))*theta(t,th)*Puczlhzl(x[j]/x[k],alpha2(t),t)*fh+prop2(t,mw,mz,mw,x[j]/x[k])*cut(x[j],x[k],mu(t))*Puczlwlwl(x[j]/x[k],alpha2(t),t)*(fwpl+fwml));
 	return b;
 }
 

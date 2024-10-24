@@ -17,13 +17,14 @@ XMax: 1
 QMin: 9.9438020e+00
 QMax: 5.7222760e+004
 MMuon: 0.1056584
+MTau: 1.78
 MW: 80.379
 MZ: 91.1876
 MHiggs: 125.25
 MUp: 0
 MDown: 0
 MStrange: 0
-MCharm: 0
+MCharm: 1.29
 MBottom: 4.18
 Q_QCD: 0.7
 AlphaS_MZ: 0.117982

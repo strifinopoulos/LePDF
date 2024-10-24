@@ -1,0 +1,14 @@
+
+Differences of 1.1 from 1.0:
+
+1) The x-grid is now saved including all the last 100 points and with 10 significant digits.
+2) We ran again the code generating directly the grid, without importing it from an external file. The results reported correspond to this new run.
+3) The selection of the points of the grid to be saved has been moved in the section "Input parameters" at the beginning of "Main.cpp".
+4) We added a more detailed manual for how to use LePDF, including details on the source code.
+
+
+Differences of 1.2 from 1.1:
+
+1) Mass thresholds for the charm quark and tau lepton are now also included. These fermions are not present in the DGLAP evolutions for scales smaller than the corresponding mass.
+2) The QED coupling evolution is modified accordingly.
+3) A section describing these thresholds has been added to the manual.
